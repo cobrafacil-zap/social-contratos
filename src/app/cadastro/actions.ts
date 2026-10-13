@@ -14,31 +14,31 @@ const schema = z.object({
 });
 
 export async function signupAction(_: SignupState, formData: FormData): Promise<SignupState> {
-  const parsed = schema.safeParse({
-    companyName: formData.get("companyName"),
-    name: formData.get("name"),
-    email: formData.get("email"),
-    password: formData.get("password"),
-  });
-
-  if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Verifique os campos e tente novamente." };
-  }
-
-  const { companyName, name, email, password } = parsed.data;
-
-  // Rate limiting: 5 tentativas de cadastro por e-mail a cada 15 minutos
-  if (!rateLimit(`signup:${email}`, 5, 15 * 60_000)) {
-    return { error: "Muitas tentativas. Aguarde 15 minutos antes de tentar novamente." };
-  }
-
-  // Verifica se o e-mail já está em uso
-  const existing = await db.user.findUnique({ where: { email } });
-  if (existing) {
-    return { error: "Este e-mail já está cadastrado. Tente fazer login." };
-  }
-
   try {
+    const parsed = schema.safeParse({
+      companyName: formData.get("companyName"),
+      name: formData.get("name"),
+      email: formData.get("email"),
+      password: formData.get("password"),
+    });
+
+    if (!parsed.success) {
+      return { error: parsed.error.issues[0]?.message ?? "Verifique os campos e tente novamente." };
+    }
+
+    const { companyName, name, email, password } = parsed.data;
+
+    // Rate limiting: 5 tentativas de cadastro por e-mail a cada 15 minutos
+    if (!rateLimit(`signup:${email}`, 5, 15 * 60_000)) {
+      return { error: "Muitas tentativas. Aguarde 15 minutos antes de tentar novamente." };
+    }
+
+    // Verifica se o e-mail já está em uso
+    const existing = await db.user.findUnique({ where: { email } });
+    if (existing) {
+      return { error: "Este e-mail já está cadastrado. Triede fazer login." };
+    }
+
     const passwordHash = await hash(password);
 
     // Cria empresa
@@ -69,9 +69,9 @@ export async function signupAction(_: SignupState, formData: FormData): Promise<
       },
     });
 
-    return { success: "Conta criada com sucesso! Redirecionando para o login..." };
+    return { success: "Conta criada com sucesso! Faça login para continuar." };
   } catch (e) {
-    console.error("Erro no cadastro:", e);
-    return { error: "Erro ao criar conta. Verifique seus dados e tente novamente." };
+    console.error("[SIGNUP ERROR]", e);
+    return { error: "Erro interno ao criar conta. Verifique se as variáveis de ambiente estão configuradas." };
   }
 }
