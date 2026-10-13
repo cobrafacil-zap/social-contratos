@@ -1,12 +1,10 @@
 "use server";
-import { hash } from "@node-rs/argon2";
+import { hash } from "bcryptjs";
 import { z } from "zod";
 import { db } from "@/server/db";
 import { rateLimit } from "@/server/security/rate-limit";
-import { signIn } from "@/auth";
-import { redirect } from "next/navigation";
 
-export type SignupState = { error?: string };
+export type SignupState = { error?: string; success?: string };
 
 const schema = z.object({
   companyName: z.string().trim().min(2).max(100),
@@ -70,11 +68,10 @@ export async function signupAction(_: SignupState, formData: FormData): Promise<
         metadata: { email },
       },
     });
-  } catch {
+
+    return { success: "Conta criada com sucesso! Redirecionando para o login..." };
+  } catch (e) {
+    console.error("Erro no cadastro:", e);
     return { error: "Erro ao criar conta. Verifique seus dados e tente novamente." };
   }
-
-  // Login automático após cadastro
-  await signIn("credentials", { email, password, redirect: false });
-  redirect("/dashboard");
 }

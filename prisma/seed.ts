@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { hash } from "@node-rs/argon2";
+import { hash } from "bcryptjs";
 
 const db = new PrismaClient();
 
@@ -20,7 +20,7 @@ async function main() {
       name: process.env.SEED_ADMIN_NAME || "Administrador",
       email,
       role: "ADMIN",
-      passwordHash: await hash(password, { algorithm: 2 }), // Argon2id
+      passwordHash: await hash(password, 12), // bcrypt
     },
   });
   console.log(`Empresa e administrador criados: ${email}`);
