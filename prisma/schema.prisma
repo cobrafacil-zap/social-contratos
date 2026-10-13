@@ -1,0 +1,339 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role { ADMIN EMPLOYEE SALES FINANCE VIEWER }
+enum ContractStatus { DRAFT SENT VIEWED AWAITING PARTIALLY_SIGNED SIGNED REFUSED CANCELED EXPIRED }
+enum SignerStatus { PENDING VIEWED SIGNED REFUSED }
+enum FieldType { SIGNATURE FULL_NAME CPF DATE TEXT CHECKBOX INITIALS }
+enum SignatureMethod { TYPED DRAWN UPLOADED }
+enum DocumentKind { VERSION_PDF SIGNED_PDF CERTIFICATE ATTACHMENT IMPORTED }
+
+model Company {
+  id                      String   @id @default(uuid()) @db.Uuid
+  name                    String
+  legalName               String?
+  cnpj                    String?
+  address                 String?
+  phone                   String?
+  email                   String?
+  website                 String?
+  logoKey                 String?
+  primaryColor            String   @default("#2F4BFF")
+  secondaryColor          String   @default("#10131A")
+  responsibleName         String?
+  responsibleSignatureKey String?
+  contractPrefix          String   @default("SOC")
+  settings                Json     @default("{}")
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  users         User[]
+  clients       Client[]
+  templates     ContractTemplate[]
+  contracts     Contract[]
+  documents     Document[]
+  auditEvents   AuditEvent[]
+  notifications Notification[]
+  emailLogs     EmailLog[]
+  activityLogs  ActivityLog[]
+  sequences     ContractSequence[]
+}
+
+model User {
+  id           String    @id @default(uuid()) @db.Uuid
+  companyId    String    @db.Uuid
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         Role      @default(EMPLOYEE)
+  permissions  String[]
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  company       Company        @relation(fields: [companyId], references: [id])
+  contracts     Contract[]
+  notifications Notification[]
+
+  @@index([companyId])
+}
+
+model Client {
+  id          String    @id @default(uuid()) @db.Uuid
+  companyId   String    @db.Uuid
+  name        String
+  document    String?
+  email       String
+  phone       String?
+  companyName String?
+  address     String?
+  city        String?
+  state       String?
+  zip         String?
+  createdBy   String    @db.Uuid
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  company   Company    @relation(fields: [companyId], references: [id])
+  contracts Contract[]
+
+  @@index([companyId, email])
+  @@index([companyId, document])
+}
+
+model ContractTemplate {
+  id         String    @id @default(uuid()) @db.Uuid
+  companyId  String    @db.Uuid
+  name       String
+  category   String?
+  content    Json
+  headerHtml String?
+  footerHtml String?
+  createdBy  String    @db.Uuid
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  company   Company    @relation(fields: [companyId], references: [id])
+  contracts Contract[]
+
+  @@index([companyId])
+}
+
+model ContractSequence {
+  companyId String  @db.Uuid
+  year      Int
+  last      Int     @default(0)
+  company   Company @relation(fields: [companyId], references: [id])
+
+  @@id([companyId, year])
+}
+
+model Contract {
+  id               String         @id @default(uuid()) @db.Uuid
+  companyId        String         @db.Uuid
+  number           String         @unique
+  title            String
+  clientId         String         @db.Uuid
+  templateId       String?        @db.Uuid
+  ownerId          String         @db.Uuid
+  status           ContractStatus @default(DRAFT)
+  value            Decimal?       @db.Decimal(14, 2)
+  startDate        DateTime?
+  endDate          DateTime?
+  variables        Json           @default("{}")
+  currentVersionId String?        @db.Uuid
+  expiresAt        DateTime?
+  sentAt           DateTime?
+  completedAt      DateTime?
+  archivedAt       DateTime?
+  createdBy        String         @db.Uuid
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  deletedAt        DateTime?
+
+  company     Company           @relation(fields: [companyId], references: [id])
+  client      Client            @relation(fields: [clientId], references: [id])
+  template    ContractTemplate? @relation(fields: [templateId], references: [id])
+  owner       User              @relation(fields: [ownerId], references: [id])
+  versions    ContractVersion[]
+  signers     Signer[]
+  documents   Document[]
+  auditEvents AuditEvent[]
+
+  @@index([companyId, status])
+  @@index([companyId, clientId])
+}
+
+model ContractVersion {
+  id            String    @id @default(uuid()) @db.Uuid
+  contractId    String    @db.Uuid
+  versionNumber Int
+  content       Json
+  renderedHtml  String
+  isLocked      Boolean   @default(false)
+  lockedAt      DateTime?
+  sha256        String?
+  pdfDocumentId String?   @db.Uuid
+  invalidatedAt DateTime?
+  invalidReason String?
+  createdBy     String    @db.Uuid
+  createdAt     DateTime  @default(now())
+
+  contract Contract         @relation(fields: [contractId], references: [id])
+  fields   SignatureField[]
+  signers  Signer[]
+
+  @@unique([contractId, versionNumber])
+}
+
+model Signer {
+  id             String       @id @default(uuid()) @db.Uuid
+  contractId     String       @db.Uuid
+  versionId      String       @db.Uuid
+  name           String
+  email          String
+  role           String
+  order          Int          @default(1)
+  status         SignerStatus @default(PENDING)
+  tokenHash      String       @unique
+  tokenExpiresAt DateTime
+  tokenRevokedAt DateTime?
+  viewedAt       DateTime?
+  signedAt       DateTime?
+  refusedAt      DateTime?
+  refusalReason  String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  contract   Contract         @relation(fields: [contractId], references: [id])
+  version    ContractVersion  @relation(fields: [versionId], references: [id])
+  fields     SignatureField[]
+  signatures Signature[]
+
+  @@index([contractId])
+}
+
+model SignatureField {
+  id        String    @id @default(uuid()) @db.Uuid
+  versionId String    @db.Uuid
+  signerId  String    @db.Uuid
+  type      FieldType
+  page      Int
+  x         Float
+  y         Float
+  width     Float
+  height    Float
+  required  Boolean   @default(true)
+  label     String?
+  value     String?
+
+  version    ContractVersion @relation(fields: [versionId], references: [id])
+  signer     Signer          @relation(fields: [signerId], references: [id])
+  signatures Signature[]
+
+  @@index([versionId])
+}
+
+model Signature {
+  id              String          @id @default(uuid()) @db.Uuid
+  signerId        String          @db.Uuid
+  fieldId         String?         @db.Uuid
+  method          SignatureMethod
+  imageKey        String?
+  typedName       String?
+  fontStyle       String?
+  documentSha256  String
+  termsAcceptedAt DateTime
+  signedAt        DateTime
+  ip              String?
+  userAgent       String?
+  uniqueCode      String          @unique
+
+  signer Signer          @relation(fields: [signerId], references: [id])
+  field  SignatureField? @relation(fields: [fieldId], references: [id])
+}
+
+model Document {
+  id         String       @id @default(uuid()) @db.Uuid
+  companyId  String       @db.Uuid
+  contractId String?      @db.Uuid
+  kind       DocumentKind
+  storageKey String
+  fileName   String
+  mimeType   String
+  sizeBytes  Int
+  sha256     String
+  createdBy  String?      @db.Uuid
+  createdAt  DateTime     @default(now())
+  deletedAt  DateTime?
+
+  company  Company   @relation(fields: [companyId], references: [id])
+  contract Contract? @relation(fields: [contractId], references: [id])
+
+  @@index([companyId, contractId])
+}
+
+// Append-only: UPDATE/DELETE bloqueados por trigger (ver migration).
+model AuditEvent {
+  id         String   @id @default(uuid()) @db.Uuid
+  companyId  String   @db.Uuid
+  contractId String?  @db.Uuid
+  signerId   String?  @db.Uuid
+  type       String
+  actorType  String
+  actorId    String?
+  ip         String?
+  userAgent  String?
+  metadata   Json?
+  prevHash   String?
+  hash       String
+  createdAt  DateTime @default(now())
+
+  company  Company   @relation(fields: [companyId], references: [id])
+  contract Contract? @relation(fields: [contractId], references: [id])
+
+  @@index([contractId, createdAt])
+  @@index([companyId, createdAt])
+}
+
+model Notification {
+  id         String    @id @default(uuid()) @db.Uuid
+  companyId  String    @db.Uuid
+  userId     String?   @db.Uuid
+  type       String
+  title      String
+  body       String?
+  contractId String?   @db.Uuid
+  readAt     DateTime?
+  createdAt  DateTime  @default(now())
+
+  company Company @relation(fields: [companyId], references: [id])
+  user    User?   @relation(fields: [userId], references: [id])
+
+  @@index([companyId, userId, readAt])
+}
+
+model EmailLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  companyId  String   @db.Uuid
+  contractId String?  @db.Uuid
+  signerId   String?  @db.Uuid
+  template   String
+  toEmail    String
+  subject    String
+  providerId String?
+  status     String
+  error      String?
+  createdAt  DateTime @default(now())
+
+  company Company @relation(fields: [companyId], references: [id])
+
+  @@index([companyId, createdAt])
+}
+
+model ActivityLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  companyId String   @db.Uuid
+  userId    String?  @db.Uuid
+  action    String
+  entity    String
+  entityId  String?
+  ip        String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  company Company @relation(fields: [companyId], references: [id])
+
+  @@index([companyId, createdAt])
+}

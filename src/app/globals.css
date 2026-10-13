@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body { @apply bg-paper text-ink antialiased; }
+  :focus-visible { @apply outline-2 outline-offset-2 outline-cobalt; }
+}
+
+@layer components {
+  .field { @apply h-11 w-full rounded-lg border border-paper-line bg-white px-3.5 text-[15px] text-ink placeholder:text-ink-mute transition-colors focus:border-cobalt focus:outline-none focus:ring-2 focus:ring-cobalt/20; }
+  .btn { @apply inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-cobalt px-5 text-[15px] font-semibold text-white transition-colors hover:bg-cobalt-dark disabled:cursor-not-allowed disabled:opacity-60; }
+}
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
