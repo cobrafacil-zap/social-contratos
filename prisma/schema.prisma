@@ -8,12 +8,56 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-enum Role { ADMIN EMPLOYEE SALES FINANCE VIEWER }
-enum ContractStatus { DRAFT SENT VIEWED AWAITING PARTIALLY_SIGNED SIGNED REFUSED CANCELED EXPIRED }
-enum SignerStatus { PENDING VIEWED SIGNED REFUSED }
-enum FieldType { SIGNATURE FULL_NAME CPF DATE TEXT CHECKBOX INITIALS }
-enum SignatureMethod { TYPED DRAWN UPLOADED }
-enum DocumentKind { VERSION_PDF SIGNED_PDF CERTIFICATE ATTACHMENT IMPORTED }
+enum Role {
+  ADMIN
+  EMPLOYEE
+  SALES
+  FINANCE
+  VIEWER
+}
+
+enum ContractStatus {
+  DRAFT
+  SENT
+  VIEWED
+  AWAITING
+  PARTIALLY_SIGNED
+  SIGNED
+  REFUSED
+  CANCELED
+  EXPIRED
+}
+
+enum SignerStatus {
+  PENDING
+  VIEWED
+  SIGNED
+  REFUSED
+}
+
+enum FieldType {
+  SIGNATURE
+  FULL_NAME
+  CPF
+  DATE
+  TEXT
+  CHECKBOX
+  INITIALS
+}
+
+enum SignatureMethod {
+  TYPED
+  DRAWN
+  UPLOADED
+}
+
+enum DocumentKind {
+  VERSION_PDF
+  SIGNED_PDF
+  CERTIFICATE
+  ATTACHMENT
+  IMPORTED
+}
 
 model Company {
   id                      String   @id @default(uuid()) @db.Uuid
