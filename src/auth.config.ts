@@ -1,7 +1,7 @@
 import type { NextAuthConfig } from "next-auth";
 
 // Rotas públicas: assinatura do cliente (por token), verificação, páginas legais, webhooks e cron.
-export const PUBLIC = ["/login", "/s/", "/verificar/", "/privacidade", "/termos", "/api/public/", "/api/webhooks/", "/api/cron/", "/api/auth"];
+export const PUBLIC = ["/login", "/cadastro", "/s/", "/verificar/", "/privacidade", "/termos", "/api/public/", "/api/webhooks/", "/api/cron/", "/api/auth"];
 
 export const authConfig = {
   pages: { signIn: "/login" },

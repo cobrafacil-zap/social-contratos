@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { LoginForm } from "./login-form";
 
@@ -22,6 +23,12 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           <h2 className="text-2xl font-extrabold tracking-tight">Entrar na sua conta</h2>
           <p className="mb-6 mt-1.5 text-ink-mute">Use o e-mail e a senha cadastrados pelo administrador.</p>
           <LoginForm next={next ?? "/dashboard"} />
+          <p className="mt-6 text-center text-sm text-ink-mute">
+            Ainda não tem uma conta?{" "}
+            <Link href="/cadastro" className="font-semibold text-cobalt hover:underline">
+              Criar conta
+            </Link>
+          </p>
         </div>
       </section>
     </main>
