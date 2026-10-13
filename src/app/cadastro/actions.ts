@@ -4,6 +4,7 @@ import { z } from "zod";
 import { db } from "@/server/db";
 import { rateLimit } from "@/server/security/rate-limit";
 import { signIn } from "@/auth";
+import { redirect } from "next/navigation";
 
 export type SignupState = { error?: string };
 
@@ -69,16 +70,11 @@ export async function signupAction(_: SignupState, formData: FormData): Promise<
         metadata: { email },
       },
     });
-
-    // Login automático após cadastro
-    await signIn("credentials", {
-      email,
-      password,
-      redirectTo: "/dashboard",
-    });
   } catch {
     return { error: "Erro ao criar conta. Verifique seus dados e tente novamente." };
   }
 
-  return {};
+  // Login automático após cadastro
+  await signIn("credentials", { email, password, redirect: false });
+  redirect("/dashboard");
 }
