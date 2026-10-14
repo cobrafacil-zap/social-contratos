@@ -1,0 +1,184 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1122" height="1402" viewBox="0 0 1122 1402" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="68" y1="20" x2="1005" y2="1402" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#030817"/><stop offset=".5" stop-color="#06132B"/><stop offset="1" stop-color="#020612"/>
+    </linearGradient>
+    <radialGradient id="topGlow" cx="0" cy="0" r="1" gradientTransform="matrix(0 440 -610 0 556 85)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#123B9A" stop-opacity=".38"/><stop offset="1" stop-color="#071126" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="floorGlow" cx="0" cy="0" r="1" gradientTransform="matrix(0 215 -590 0 561 1013)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#167AFF" stop-opacity=".27"/><stop offset="1" stop-color="#071126" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="headline" x1="120" y1="84" x2="1002" y2="183" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff"/><stop offset=".55" stop-color="#DCEBFF"/><stop offset="1" stop-color="#fff"/>
+    </linearGradient>
+    <linearGradient id="blueText" x1="120" y1="180" x2="1000" y2="246" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#16D9FF"/><stop offset=".52" stop-color="#348BFF"/><stop offset="1" stop-color="#1461FF"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="222" y1="452" x2="934" y2="936" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#07152D"/><stop offset="1" stop-color="#020916"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="407" y1="581" x2="934" y2="942" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A1932"/><stop offset="1" stop-color="#061124"/>
+    </linearGradient>
+    <linearGradient id="button" x1="226" y1="1143" x2="896" y2="1212" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#164BFF"/><stop offset=".55" stop-color="#087DFF"/><stop offset="1" stop-color="#173FFF"/>
+    </linearGradient>
+    <linearGradient id="laptop" x1="170" y1="956" x2="952" y2="1062" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#182B49"/><stop offset=".2" stop-color="#7287A5"/><stop offset=".5" stop-color="#263C5E"/><stop offset=".82" stop-color="#8CA3C3"/><stop offset="1" stop-color="#203556"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#19E6FF"/><stop offset="1" stop-color="#1673FF"/>
+    </linearGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="9" result="blur"/><feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.03 0 0 0 0 0.36 0 0 0 0 1 0 0 0 .8 0"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" stroke="#4A7CC5" stroke-opacity=".075" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <!-- Futuristic midnight canvas -->
+  <path fill="url(#bg)" d="M0 0h1122v1402H0z"/>
+  <path fill="url(#topGlow)" d="M0 0h1122v550H0z"/>
+  <path fill="url(#floorGlow)" d="M0 800h1122v602H0z"/>
+  <path fill="url(#grid)" opacity=".6" d="M0 0h1122v1402H0z"/>
+  <circle cx="-51" cy="-27" r="168" stroke="#0C55FF" stroke-opacity=".7" stroke-width="2"/>
+  <circle cx="-51" cy="-27" r="145" stroke="#0C55FF" stroke-opacity=".35" stroke-width="28"/>
+  <path d="M1124 320c-104 63-159 162-159 291v34" stroke="#087BFF" stroke-width="4" filter="url(#glow)"/>
+  <path d="M0 826c137 6 213-34 298-81" stroke="#087BFF" stroke-width="4" opacity=".8" filter="url(#glow)"/>
+  <circle cx="1025" cy="680" r="135" stroke="#1249B4" stroke-opacity=".17" stroke-width="30"/>
+  <circle cx="1025" cy="680" r="172" stroke="#1A67FF" stroke-opacity=".45" stroke-width="2"/>
+  <g fill="#39C8FF" opacity=".68"><circle cx="56" cy="340" r="2"/><circle cx="1048" cy="286" r="2"/><circle cx="104" cy="1010" r="2"/><circle cx="1019" cy="1083" r="2"/><circle cx="83" cy="271" r="1.5"/><circle cx="1008" cy="383" r="1.5"/></g>
+
+  <!-- Main message -->
+  <text x="561" y="127" text-anchor="middle" fill="url(#headline)" font-family="Arial, Helvetica, sans-serif" font-size="60" font-weight="900" letter-spacing="-2.6">SUA AGÊNCIA CRESCEU.</text>
+  <text x="561" y="198" text-anchor="middle" fill="url(#blueText)" font-family="Arial, Helvetica, sans-serif" font-size="59" font-weight="900" letter-spacing="-2.6">A GESTÃO ACOMPANHOU?</text>
+  <path d="M360 221h402" stroke="#26BCFF" stroke-opacity=".5" stroke-width="1"/>
+  <path d="M495 221h132" stroke="#31DFFF" stroke-width="2" filter="url(#glow)"/>
+
+  <!-- Feature icons -->
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle">
+    <g transform="translate(280 256)">
+      <rect width="86" height="82" rx="19" fill="#071832" fill-opacity=".88" stroke="#2379FF" stroke-opacity=".72"/>
+      <rect x="5" y="5" width="76" height="72" rx="15" stroke="#4BCBFF" stroke-opacity=".13"/>
+      <g stroke="url(#cyan)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="43" cy="30" r="8"/><circle cx="29" cy="34" r="6"/><circle cx="57" cy="34" r="6"/>
+        <path d="M28 58c0-8 7-14 15-14s15 6 15 14M18 57c0-6 4-11 10-12M68 57c0-6-4-11-10-12"/>
+      </g>
+      <text x="43" y="118" fill="#EAF3FF" font-size="27" font-weight="500">Clientes</text>
+    </g>
+    <g transform="translate(518 256)">
+      <rect width="86" height="82" rx="19" fill="#071832" fill-opacity=".88" stroke="#2379FF" stroke-opacity=".72"/>
+      <rect x="5" y="5" width="76" height="72" rx="15" stroke="#4BCBFF" stroke-opacity=".13"/>
+      <g fill="url(#cyan)"><rect x="23" y="44" width="9" height="18" rx="3"/><rect x="39" y="34" width="9" height="28" rx="3"/><rect x="55" y="23" width="9" height="39" rx="3"/></g>
+      <text x="43" y="118" fill="#EAF3FF" font-size="27" font-weight="500">Financeiro</text>
+    </g>
+    <g transform="translate(756 256)">
+      <rect width="86" height="82" rx="19" fill="#071832" fill-opacity=".88" stroke="#2379FF" stroke-opacity=".72"/>
+      <rect x="5" y="5" width="76" height="72" rx="15" stroke="#4BCBFF" stroke-opacity=".13"/>
+      <g stroke="url(#cyan)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M29 22h20l11 11v29H29zM49 22v12h11M36 42h17M36 49h17M36 56h12"/>
+      </g>
+      <text x="43" y="118" fill="#EAF3FF" font-size="27" font-weight="500">Contratos</text>
+    </g>
+  </g>
+
+  <!-- Laptop shadow and screen -->
+  <ellipse cx="561" cy="1034" rx="465" ry="45" fill="#006BFF" opacity=".23" filter="url(#softShadow)"/>
+  <path d="M206 417h710c17 0 30 13 31 30l25 510H157l19-511c1-16 14-29 30-29Z" fill="#02050C" stroke="#91B9FF" stroke-width="2"/>
+  <path d="M207 429h706c10 0 18 8 19 18l22 484H170l18-484c0-10 8-18 19-18Z" fill="url(#screen)" stroke="#315B9B" stroke-width="1.5"/>
+  <circle cx="561" cy="430" r="2.4" fill="#132C51"/>
+  <circle cx="561" cy="430" r="1" fill="#51CFFF"/>
+
+  <!-- Application shell -->
+  <rect x="185" y="450" width="722" height="464" rx="10" fill="#030B18"/>
+  <path d="M185 460a10 10 0 0 1 10-10h702a10 10 0 0 1 10 10v35H185z" fill="#07152A"/>
+  <path d="M185 495h722" stroke="#1A3153"/>
+  <!-- Logo in app -->
+  <g font-family="Arial, Helvetica, sans-serif">
+    <path d="M206 472c7-12 18-17 29-15 8 2 13 9 20 16 8 9 18 11 29 3" stroke="#1DDCFF" stroke-width="2.3"/>
+    <text x="205" y="488" fill="#145CFF" font-size="31" font-weight="900" letter-spacing="-2">S</text>
+    <text x="222" y="488" fill="#F3F8FF" font-size="31" font-weight="900" letter-spacing="-3">M</text>
+    <text x="254" y="486" fill="#E9F1FF" font-size="22" font-weight="500">Hub</text>
+    <circle cx="884" cy="469" r="2" fill="#D4E6FF"/><circle cx="884" cy="477" r="2" fill="#D4E6FF"/><circle cx="884" cy="485" r="2" fill="#D4E6FF"/>
+  </g>
+  <!-- Sidebar -->
+  <path d="M185 495h166v419H185z" fill="#061226"/>
+  <rect x="196" y="508" width="145" height="37" rx="9" fill="#095EFF"/>
+  <g font-family="Arial, Helvetica, sans-serif" font-size="12.5" fill="#D8E5FA">
+    <g fill="#fff"><path d="m209 521 8-7 8 7v12h-6v-7h-5v7h-5z" fill="none" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/><text x="230" y="532" fill="#fff" font-weight="700">Dashboard</text></g>
+    <g stroke="#B8CBE6" stroke-width="1.4" fill="none"><circle cx="217" cy="565" r="5"/><path d="M208 579c0-5 4-9 9-9s9 4 9 9M207 600h20M208 598l1-11h17l1 11zM208 626h18v15h-18zM211 631h12M211 636h12"/><circle cx="217" cy="661" r="9"/><path d="M220 657c-2-2-6-1-6 1s6 2 6 4-4 3-7 1M217 654v14M209 687h16v19h-16zM209 692h16M213 696h8M213 700h8"/><path d="m208 731 4-2 3 2 4-7 4 1 4-6M208 748h19v16h-19zM212 756l4 4 8-9M208 790h18v17h-18zM211 799l4 4 8-10"/></g>
+    <text x="236" y="569">Clientes</text><text x="236" y="601">Projetos</text><text x="236" y="632">Financeiro</text><text x="236" y="664">Contratos</text><text x="236" y="700">Relatórios</text><text x="236" y="744">Tarefas</text>
+  </g>
+  <!-- Main dashboard -->
+  <text x="372" y="534" fill="#F0F6FF" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">Visão Geral</text>
+  <rect x="797" y="507" width="111" height="31" rx="8" fill="#07162B" stroke="#17365E"/>
+  <text x="811" y="527" fill="#B7C8E2" font-family="Arial, Helvetica, sans-serif" font-size="12">Este mês</text>
+  <path d="m891 520 5 5 5-5" stroke="#A8BEDB" stroke-width="1.5"/>
+  <!-- Stat cards -->
+  <g font-family="Arial, Helvetica, sans-serif">
+    <g><rect x="369" y="551" width="112" height="105" rx="11" fill="url(#panel)" stroke="#18365D"/><text x="384" y="574" fill="#A9BEDA" font-size="12">Clientes</text><text x="384" y="610" fill="#F3F7FF" font-size="26" font-weight="700">24</text><path d="m385 630 5-6 5 6M390 624v13" stroke="#14E7C2" stroke-width="2"/><text x="403" y="636" fill="#17E6C1" font-size="12">20%</text></g>
+    <g><rect x="490" y="551" width="112" height="105" rx="11" fill="url(#panel)" stroke="#18365D"/><text x="505" y="574" fill="#A9BEDA" font-size="12">Projetos</text><text x="505" y="610" fill="#F3F7FF" font-size="26" font-weight="700">18</text><path d="m506 630 5-6 5 6M511 624v13" stroke="#14E7C2" stroke-width="2"/><text x="524" y="636" fill="#17E6C1" font-size="12">12%</text></g>
+    <g><rect x="611" y="551" width="130" height="105" rx="11" fill="url(#panel)" stroke="#18365D"/><text x="626" y="574" fill="#A9BEDA" font-size="12">Receita</text><text x="626" y="607" fill="#F3F7FF" font-size="19" font-weight="700">R$ 48.250</text><circle cx="634" cy="633" r="8" stroke="#16DCC6" stroke-width="1.5"/><text x="630" y="637" fill="#16DCC6" font-size="10">$</text><text x="649" y="637" fill="#17E6C1" font-size="12">35%</text></g>
+    <g><rect x="750" y="551" width="145" height="105" rx="11" fill="url(#panel)" stroke="#18365D"/><text x="765" y="574" fill="#A9BEDA" font-size="12">Tarefas</text><text x="765" y="610" fill="#F3F7FF" font-size="26" font-weight="700">12</text><path d="m766 635 8-8m-8 0h8v8" stroke="#14E7C2" stroke-width="2"/><text x="782" y="637" fill="#17E6C1" font-size="12">40%</text></g>
+  </g>
+  <!-- Growth chart -->
+  <rect x="369" y="668" width="367" height="231" rx="12" fill="url(#panel)" stroke="#19365C"/>
+  <text x="385" y="695" fill="#EAF2FF" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">Crescimento da Agência</text>
+  <rect x="657" y="676" width="61" height="26" rx="13" fill="#071E41" stroke="#087BFF"/>
+  <text x="687" y="694" text-anchor="middle" fill="#31CAFF" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">+28%</text>
+  <path d="M388 729h330M388 763h330M388 797h330M388 831h330M388 865h330" stroke="#244265" stroke-opacity=".48"/>
+  <path d="M388 713v155h330" stroke="#345478" stroke-opacity=".65"/>
+  <path d="M389 843 436 817 484 802 531 806 578 786 625 773 672 758 718 743v126H389z" fill="#087BFF" fill-opacity=".12"/>
+  <path d="m389 843 47-26 48-15 47 4 47-20 47-13 47-15 46-15" stroke="#168DFF" stroke-width="3" filter="url(#glow)"/>
+  <g fill="#42D8FF" stroke="#0D62FF" stroke-width="2"><circle cx="389" cy="843" r="4"/><circle cx="436" cy="817" r="4"/><circle cx="484" cy="802" r="4"/><circle cx="531" cy="806" r="4"/><circle cx="578" cy="786" r="4"/><circle cx="625" cy="773" r="4"/><circle cx="672" cy="758" r="4"/><circle cx="718" cy="743" r="4"/></g>
+  <g fill="#83A1C7" font-family="Arial, Helvetica, sans-serif" font-size="11"><text x="387" y="887">Jan</text><text x="438" y="887">Fev</text><text x="490" y="887">Mar</text><text x="547" y="887">Abr</text><text x="603" y="887">Mai</text><text x="662" y="887">Jun</text></g>
+  <!-- Project status -->
+  <rect x="748" y="668" width="157" height="231" rx="12" fill="url(#panel)" stroke="#19365C"/>
+  <text x="764" y="695" fill="#EAF2FF" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">Projetos por Status</text>
+  <circle cx="826" cy="769" r="38" stroke="#183252" stroke-width="14"/>
+  <circle cx="826" cy="769" r="38" stroke="#10D7B5" stroke-width="14" stroke-dasharray="99 140" transform="rotate(-90 826 769)"/>
+  <circle cx="826" cy="769" r="38" stroke="#168DFF" stroke-width="14" stroke-dasharray="75 164" stroke-dashoffset="-99" transform="rotate(-90 826 769)"/>
+  <circle cx="826" cy="769" r="38" stroke="#FFB83F" stroke-width="14" stroke-dasharray="25 214" stroke-dashoffset="-174" transform="rotate(-90 826 769)"/>
+  <circle cx="826" cy="769" r="38" stroke="#9666FF" stroke-width="14" stroke-dasharray="25 214" stroke-dashoffset="-199" transform="rotate(-90 826 769)"/>
+  <text x="826" y="768" text-anchor="middle" fill="#EAF5FF" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">18</text>
+  <text x="826" y="784" text-anchor="middle" fill="#8EAACB" font-family="Arial, Helvetica, sans-serif" font-size="10">Projetos</text>
+  <g font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#B9CBE2">
+    <circle cx="771" cy="827" r="5" fill="#10D7B5"/><text x="783" y="831">Em andamento</text><text x="889" y="831" text-anchor="end">8</text>
+    <circle cx="771" cy="845" r="5" fill="#168DFF"/><text x="783" y="849">Concluídos</text><text x="889" y="849" text-anchor="end">6</text>
+    <circle cx="771" cy="863" r="5" fill="#FFB83F"/><text x="783" y="867">Atrasados</text><text x="889" y="867" text-anchor="end">2</text>
+    <circle cx="771" cy="881" r="5" fill="#9666FF"/><text x="783" y="885">Proposta</text><text x="889" y="885" text-anchor="end">2</text>
+  </g>
+
+  <!-- Laptop base -->
+  <path d="M158 957h806l73 76c5 6 1 14-8 15H104c-9 0-13-8-7-15l61-68Z" fill="url(#laptop)" stroke="#9BB6D6" stroke-opacity=".66" stroke-width="1.5"/>
+  <path d="M179 969h764l47 48H132z" fill="#09142A" stroke="#263F62"/>
+  <path d="M426 1017h271l22 18H401z" fill="#182B46" stroke="#6F89A8" stroke-opacity=".55"/>
+  <path d="M103 1047h922" stroke="#55A8FF" stroke-opacity=".68" stroke-width="2" filter="url(#glow)"/>
+  <g stroke="#187DFF" stroke-opacity=".6" stroke-width="1">
+    <path d="M185 977h47m-35 7h49m-37 7h49m-37 7h49m507-28h47m-59 7h49m-61 7h49m-61 7h49"/>
+    <path d="M251 977h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5m7 0h5"/>
+  </g>
+
+  <!-- Closing line and call to action -->
+  <text x="561" y="1103" text-anchor="middle" fill="#F0F5FF" font-family="Arial, Helvetica, sans-serif" font-size="43" font-weight="800" letter-spacing="-1.3">Tudo em um <tspan fill="url(#blueText)">só lugar.</tspan></text>
+  <rect x="219" y="1135" width="684" height="77" rx="39" fill="#086CFF" opacity=".3" filter="url(#glow)"/>
+  <rect x="228" y="1141" width="666" height="68" rx="34" fill="url(#button)" stroke="#1CCEFF" stroke-width="2"/>
+  <path d="M244 1150h581" stroke="#A9F4FF" stroke-opacity=".33"/>
+  <text x="543" y="1185" text-anchor="middle" fill="#F7FBFF" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="700">Centralize sua agência no SM Hub</text>
+  <circle cx="855" cy="1175" r="25" fill="#07194B" fill-opacity=".75"/>
+  <path d="M844 1175h20m-8-8 8 8-8 8" stroke="#19DDFE" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="561" y="1260" text-anchor="middle" fill="#B8C7DF" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="500">Planejamento  <tspan fill="#087BFF">•</tspan>  Financeiro  <tspan fill="#087BFF">•</tspan>  Contratos  <tspan fill="#087BFF">•</tspan>  Relatórios</text>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle">
+    <path d="M498 1310c9-16 22-23 35-19 10 3 15 12 24 19 10 10 22 11 35 3" stroke="#19DFFF" stroke-width="2.6"/>
+    <text x="494" y="1335" fill="#155FFF" font-size="39" font-weight="900" letter-spacing="-3">S</text>
+    <text x="515" y="1335" fill="#ECF4FF" font-size="39" font-weight="900" letter-spacing="-4">M</text>
+    <text x="554" y="1333" fill="#F0F5FF" font-size="28" font-weight="500">Hub</text>
+  </g>
+  <path d="M468 1362h186" stroke="#20538D" stroke-opacity=".58"/>
+  <circle cx="561" cy="1362" r="2" fill="#20CFFF"/>
+</svg>

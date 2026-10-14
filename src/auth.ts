@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { compare } from "bcryptjs";
+import { verifyPassword } from "@/server/password";
 import { z } from "zod";
 import { authConfig } from "./auth.config";
 import { db } from "@/server/db";
@@ -24,7 +24,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!rateLimit(`login:${email}`, 5, 15 * 60_000)) return null;
 
         const user = await db.user.findUnique({ where: { email } });
-        const ok = await compare(parsed.data.password, user?.passwordHash ?? DUMMY).catch(() => false);
+        const ok = await verifyPassword(parsed.data.password, user?.passwordHash ?? DUMMY).catch(() => false);
         if (!user || !ok || !user.isActive || user.deletedAt) return null;
 
         await db.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });

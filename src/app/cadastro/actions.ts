@@ -1,8 +1,8 @@
 "use server";
-import { hash } from "bcryptjs";
 import { z } from "zod";
 import { db } from "@/server/db";
 import { rateLimit } from "@/server/security/rate-limit";
+import { hashPassword } from "@/server/password";
 
 export type SignupState = { error?: string; success?: string };
 
@@ -28,25 +28,21 @@ export async function signupAction(_: SignupState, formData: FormData): Promise<
 
     const { companyName, name, email, password } = parsed.data;
 
-    // Rate limiting: 5 tentativas de cadastro por e-mail a cada 15 minutos
     if (!rateLimit(`signup:${email}`, 5, 15 * 60_000)) {
       return { error: "Muitas tentativas. Aguarde 15 minutos antes de tentar novamente." };
     }
 
-    // Verifica se o e-mail já está em uso
     const existing = await db.user.findUnique({ where: { email } });
     if (existing) {
       return { error: "Este e-mail já está cadastrado. Triede fazer login." };
     }
 
-    const passwordHash = await hash(password);
+    const passwordHash = await hashPassword(password);
 
-    // Cria empresa
     const company = await db.company.create({
       data: { name: companyName },
     });
 
-    // Cria usuário admin
     const user = await db.user.create({
       data: {
         companyId: company.id,
@@ -57,7 +53,6 @@ export async function signupAction(_: SignupState, formData: FormData): Promise<
       },
     });
 
-    // Log de atividade
     await db.activityLog.create({
       data: {
         companyId: company.id,
