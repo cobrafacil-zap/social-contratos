@@ -67,6 +67,7 @@ export async function signupAction(_: SignupState, formData: FormData): Promise<
     return { success: "Conta criada com sucesso! Faça login para continuar." };
   } catch (e) {
     console.error("[SIGNUP ERROR]", e);
-    return { error: "Erro interno ao criar conta. Verifique se as variáveis de ambiente estão configuradas." };
+    const msg = e instanceof Error ? e.message : String(e);
+    return { error: `Erro: ${msg}` };
   }
 }
