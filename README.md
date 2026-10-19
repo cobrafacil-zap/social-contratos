@@ -11,15 +11,19 @@ cp .env.example .env     # preencha as variáveis
 
 ## 2. Banco (Supabase)
 1. Crie o projeto em supabase.com.
-2. Em *Project Settings → Database → Connection string* copie:
-   - **Transaction pooler** (porta 6543) → `DATABASE_URL` (com `?pgbouncer=true`)
-   - **Direct / Session** (porta 5432) → `DIRECT_URL`
+2. Em *Project Settings → Database → Connection string* copie a string do **Session pooler** (porta 5432) e use o usuário no formato `postgres.<project-ref>`:
+```
+DATABASE_URL="postgresql://postgres.<project-ref>:SENHA@aws-0-REGIAO.pooler.supabase.com:5432/postgres"
+DIRECT_URL="postgresql://postgres.<project-ref>:SENHA@aws-0-REGIAO.pooler.supabase.com:5432/postgres"
+```
+   > **Atenção:** o host direto (`db.<ref>.supabase.co`) é IPv6-only e **não funciona na Vercel**. O Transaction pooler (porta 6543) é incompatível com o Prisma em ambiente serverless. Use sempre o Session pooler na porta 5432 com o tenant no usuário.
 3. Gere o `AUTH_SECRET`: `openssl rand -base64 32`. Gere também `TOKEN_PEPPER` e `CRON_SECRET`: `openssl rand -hex 32`.
 4. Crie as tabelas e aplique as proteções:
 ```bash
 npx prisma migrate dev --name init   # cria prisma/migrations e as tabelas
 npm run db:guards                    # trigger append-only da auditoria, trava de versões e RLS
 ```
+   > Se a migration falhar com `no tenant identifier provided`, a string de conexão está sem o tenant (`postgres.` antes do project-ref). Corrija e rode novamente.
 5. Crie o primeiro administrador (preencha `SEED_ADMIN_EMAIL` e `SEED_ADMIN_PASSWORD`, mínimo 12 caracteres):
 ```bash
 npm run db:seed
