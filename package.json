@@ -10,7 +10,8 @@
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
-    "db:guards": "prisma db execute --file prisma/sql/guards.sql --schema prisma/schema.prisma"
+    "db:guards": "prisma db execute --file prisma/sql/guards.sql --schema prisma/schema.prisma",
+    "teste:integracao": "tsx scripts/teste-integracao.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.0.0",

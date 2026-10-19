@@ -10,20 +10,20 @@ type Item = { label: string; href: string; icon: React.ComponentType<{ className
 const GROUPS: { title?: string; items: Item[] }[] = [
   { items: [
     { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, ready: true },
-    { label: "Contratos", href: "/contratos", icon: FileText, ready: false },
-    { label: "Novo contrato", href: "/contratos/novo", icon: FilePlus2, ready: false },
-    { label: "Modelos", href: "/modelos", icon: Copy, ready: false },
-    { label: "Clientes", href: "/clientes", icon: Users, ready: false },
+    { label: "Contratos", href: "/contratos", icon: FileText, ready: true },
+    { label: "Novo contrato", href: "/contratos/novo", icon: FilePlus2, ready: true },
+    { label: "Modelos", href: "/modelos", icon: Copy, ready: true },
+    { label: "Clientes", href: "/clientes", icon: Users, ready: true },
   ] },
   { title: "Documentos", items: [
-    { label: "Cofre de contratos", href: "/cofre", icon: Vault, ready: false },
-    { label: "Assinaturas", href: "/assinaturas", icon: PenLine, ready: false },
-    { label: "Notificações", href: "/notificacoes", icon: Bell, ready: false },
+    { label: "Cofre de contratos", href: "/cofre", icon: Vault, ready: true },
+    { label: "Assinaturas", href: "/assinaturas", icon: PenLine, ready: true },
+    { label: "Notificações", href: "/notificacoes", icon: Bell, ready: true },
   ] },
   { title: "Conta", items: [
-    { label: "Configurações", href: "/configuracoes", icon: Settings, ready: false },
-    { label: "Minha empresa", href: "/empresa", icon: Building2, ready: false },
-    { label: "Minha conta", href: "/conta", icon: UserCircle, ready: false },
+    { label: "Configurações", href: "/configuracoes", icon: Settings, ready: true },
+    { label: "Minha empresa", href: "/empresa", icon: Building2, ready: true },
+    { label: "Minha conta", href: "/conta", icon: UserCircle, ready: true },
   ] },
 ];
 
@@ -37,7 +37,7 @@ export function Sidebar() {
           {g.title && <p className="mb-1.5 px-3 text-xs font-semibold text-ink-mute">{g.title}</p>}
           <ul className="space-y-0.5">
             {g.items.map(({ label, href, icon: Icon, ready }) => {
-              const active = path === href || path.startsWith(href + "/");
+              const active = path === href || (href !== "/dashboard" && path.startsWith(href + "/"));
               const base = "flex h-10 items-center gap-3 rounded-lg px-3 text-[15px] font-medium";
               return (
                 <li key={href}>

@@ -87,6 +87,25 @@ model Company {
   emailLogs     EmailLog[]
   activityLogs  ActivityLog[]
   sequences     ContractSequence[]
+  vaults        Vault[]
+}
+
+// Cofre: agrupamento de documentos/contratos guardados.
+model Vault {
+  id          String   @id @default(uuid()) @db.Uuid
+  companyId   String   @db.Uuid
+  name        String
+  description String?
+  color       String   @default("#2F4BFF")
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company   Company    @relation(fields: [companyId], references: [id])
+  documents Document[]
+  contracts Contract[]
+
+  @@index([companyId])
 }
 
 model User {
@@ -169,6 +188,7 @@ model Contract {
   title            String
   clientId         String         @db.Uuid
   templateId       String?        @db.Uuid
+  vaultId          String?        @db.Uuid
   ownerId          String         @db.Uuid
   status           ContractStatus @default(DRAFT)
   value            Decimal?       @db.Decimal(14, 2)
@@ -188,6 +208,7 @@ model Contract {
   company     Company           @relation(fields: [companyId], references: [id])
   client      Client            @relation(fields: [clientId], references: [id])
   template    ContractTemplate? @relation(fields: [templateId], references: [id])
+  vault       Vault?            @relation(fields: [vaultId], references: [id])
   owner       User              @relation(fields: [ownerId], references: [id])
   versions    ContractVersion[]
   signers     Signer[]
@@ -196,6 +217,7 @@ model Contract {
 
   @@index([companyId, status])
   @@index([companyId, clientId])
+  @@index([vaultId])
 }
 
 model ContractVersion {
@@ -291,6 +313,7 @@ model Document {
   id         String       @id @default(uuid()) @db.Uuid
   companyId  String       @db.Uuid
   contractId String?      @db.Uuid
+  vaultId    String?      @db.Uuid
   kind       DocumentKind
   storageKey String
   fileName   String
@@ -303,8 +326,10 @@ model Document {
 
   company  Company   @relation(fields: [companyId], references: [id])
   contract Contract? @relation(fields: [contractId], references: [id])
+  vault    Vault?    @relation(fields: [vaultId], references: [id])
 
   @@index([companyId, contractId])
+  @@index([vaultId])
 }
 
 // Append-only: UPDATE/DELETE bloqueados por trigger (ver migration).

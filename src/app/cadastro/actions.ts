@@ -1,8 +1,10 @@
 "use server";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db } from "@/server/db";
 import { rateLimit } from "@/server/security/rate-limit";
 import { hashPassword } from "@/server/password";
+import { signIn } from "@/auth";
 
 export type SignupState = { error?: string; success?: string };
 
@@ -64,10 +66,13 @@ export async function signupAction(_: SignupState, formData: FormData): Promise<
       },
     });
 
-    return { success: "Conta criada com sucesso! Faça login para continuar." };
+    // Login automático: sem confirmação de e-mail, o usuário entra direto.
+    await signIn("credentials", { email, password, redirect: false });
   } catch (e) {
     console.error("[SIGNUP ERROR]", e);
     const msg = e instanceof Error ? e.message : String(e);
     return { error: `Erro: ${msg}` };
   }
+
+  redirect("/dashboard");
 }

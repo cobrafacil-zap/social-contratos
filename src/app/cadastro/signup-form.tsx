@@ -81,6 +81,12 @@ export function SignupForm() {
         </p>
       )}
 
+      {state.success && (
+        <p role="status" className="rounded-lg bg-ok-tint px-3.5 py-2.5 text-sm text-ok">
+          {state.success}
+        </p>
+      )}
+
       <button type="submit" disabled={pending} className="btn w-full">
         {pending && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
         {pending ? "Criando conta..." : "Criar conta"}

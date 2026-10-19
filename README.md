@@ -47,17 +47,44 @@ npm run dev    # http://localhost:3000
 2. Cadastre todas as variáveis do `.env.example` em *Settings → Environment Variables* (`APP_URL` = URL final).
 3. O build já roda `prisma generate`. Aplique migrations em produção com `npm run db:deploy` e depois `npm run db:guards`.
 
+## 7. Módulos implementados
+| Módulo | Rotas | O que faz |
+|--------|-------|-----------|
+| Dashboard | `/dashboard` | Métricas de contratos, clientes, assinaturas e notificações |
+| Clientes | `/clientes`, `/clientes/novo`, `/clientes/[id]` | Cadastro completo (CPF/CNPJ, endereço, contatos), busca e edição |
+| Modelos | `/modelos`, `/modelos/novo`, `/modelos/[id]` | Templates de contrato com variáveis `{{var}}` e preview ao vivo |
+| Contratos | `/contratos`, `/contratos/novo`, `/contratos/[id]` | Wizard de criação, versões, signatários e envio para assinatura |
+| Cofre | `/cofre`, `/cofre/[vaultId]` | Cofres (criar/definir padrão), guardar contratos e enviar documentos |
+| Assinaturas | `/assinaturas`, `/assinaturas/[id]/certificado` | Prova de cada assinatura (IP, dispositivo, hash, código único) e certificado |
+| Notificações | `/notificacoes` | Avisos de assinatura, recusa e Envio, com marcação de lidas |
+| Empresa | `/empresa`, `/empresa/equipe` | Perfil da empresa, cores, prefixo de contratos e gestão de usuários |
+| Conta | `/conta` | Dados do perfil e troca de senha |
+| Configurações | `/configuracoes` | Preferências, diagnóstico de variáveis de ambiente, logs de atividade |
+| Assinatura pública | `/s/[token]` | Página que o cliente abre para assinar (digitada ou desenhada) ou recusar |
+
+### Fluxo de assinatura
+1. Em `/contratos/[id]`, clique em **Enviar para assinatura** e informe os signatários.
+2. O app gera um link `/s/<token>` para cada signatário (o token é guardado apenas como hash no banco).
+3. O signatário abre o link, preenche os campos, assina (digitando o nome ou desenhando no canvas) e confirma os termos.
+4. Cada assinatura registra documento, data/hora, IP, user-agent e um código único verificável.
+5. Quando todos assinam, o contrato vira `SIGNED` e a empresa recebe uma notificação.
+
 ## Segurança já implementada
-- Senhas com Argon2id; comparação em tempo constante; limite de 5 tentativas/15 min por e-mail
+- Senhas com scrypt (nativo do Node) e salt por senha; comparação em tempo constante; limite de 5 tentativas/15 min por e-mail
 - Sessão JWT em cookie httpOnly (8 h) e revalidação do usuário no banco a cada página
 - Headers: CSP, HSTS, X-Frame-Options, nosniff, Referrer-Policy
 - Toda consulta filtra por `companyId` da sessão
-- Auditoria append-only (trigger) e versões travadas imutáveis (trigger)
+- Auditoria append-only (trigger) com hash encadeado e versões travadas imutáveis (trigger)
 - RLS ativado nas tabelas (o app acessa só pelo servidor)
+- Tokens de assinatura guardados apenas como hash (HMAC com `TOKEN_PEPPER`)
 
-## Limitações conhecidas deste módulo
+## Limitações conhecidas
 - O rate limit é em memória; em ambiente serverless, troque por Upstash Redis (mesma interface em `src/server/security/rate-limit.ts`).
-- Os itens do menu sem módulo pronto aparecem desabilitados ("em breve"), sem links quebrados.
-- Não consegui executar `prisma generate`, a migration nem o build no meu ambiente (sem acesso ao servidor de binários do Prisma). O código passou na checagem de tipos, exceto pelos tipos que dependem do client gerado. Se algo falhar no seu primeiro `npm run build`, me envie o erro.
+- O upload de documentos no cofre exige `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`; sem elas o cofre funciona apenas com contratos vinculados.
+- A assinatura desenhada é guardada como data URL no banco; para produção, mova para o Supabase Storage.
+- O plano free do Supabase pausa o banco após 1 semana sem uso — restaure pelo painel quando isso acontecer.
 
-## Próximo: Módulo 1 — Empresa e Clientes
+## Próximo
+- Módulo 3: PDF real dos contratos (geração e download do PDF assinado)
+- Módulo 5: e-mail transacional via Resend (envio do link de assinatura, lembretes, expiração)
+- Notificações in-app em tempo real e assinatura em lote
