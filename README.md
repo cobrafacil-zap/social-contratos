@@ -40,7 +40,19 @@ No Supabase: *Storage → New bucket* chamado `contracts`, **privado** (não mar
 Preencha `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`. A service role key só é usada no servidor — nunca a exponha no frontend.
 
 ## 4. E-mail (Resend) — para enviar o contrato ao cliente
-1. Crie conta em **resend.com** e verifique o seu domínio (ou use o remetente de teste `onboarding@resend.dev`).
+1. Crie conta em **resend.com** e verifique o seu domínio (*Domains → Add Domain*).
+   O Resend devolve 4 registros DNS — cadastre-os no provedor do domínio:
+   - `TXT  resend._domainkey  <chave DKIM>`
+   - `MX   send              feedback-smtp.us-east-1.amazonses.com  (prioridade 10)`
+   - `TXT  send              v=spf1 include:amazonses.com ~all`
+   - `CNAME rsend            send.forge.rmta.net`
+   Se o DNS é gerenciado pela Vercel, dá para automatizar:
+   ```bash
+   vercel dns addseudominio.com resend._domainkey TXT "<chave>"
+   vercel dns addseudominio.com send MX "feedback-smtp.us-east-1.amazonses.com" 10
+   vercel dns addseudominio.com send TXT "v=spf1 include:amazonses.com ~all"
+   vercel dns addseudominio.com rsend CNAME "send.forge.rmta.net"
+   ```
 2. Copie a **API key** (*API Keys → Create API Key*).
 3. Preencha no `.env` **e** nas variáveis de ambiente do Vercel:
 ```
