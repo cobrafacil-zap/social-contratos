@@ -13,10 +13,12 @@ cp .env.example .env     # preencha as variáveis
 1. Crie o projeto em supabase.com.
 2. Em *Project Settings → Database → Connection string* copie a string do **Session pooler** (porta 5432) e use o usuário no formato `postgres.<project-ref>`:
 ```
-DATABASE_URL="postgresql://postgres.<project-ref>:SENHA@aws-0-REGIAO.pooler.supabase.com:5432/postgres"
-DIRECT_URL="postgresql://postgres.<project-ref>:SENHA@aws-0-REGIAO.pooler.supabase.com:5432/postgres"
+DATABASE_URL="postgresql://postgres.<project-ref>:SENHA@aws-0-REGIAO.pooler.supabase.com:5432/postgres?connection_limit=1"
+DIRECT_URL="postgresql://postgres.<project-ref>:SENHA@aws-0-REGIAO.pooler.supabase.com:5432/postgres?connection_limit=1"
 ```
    > **Atenção:** o host direto (`db.<ref>.supabase.co`) é IPv6-only e **não funciona na Vercel**. O Transaction pooler (porta 6543) é incompatível com o Prisma em ambiente serverless. Use sempre o Session pooler na porta 5432 com o tenant no usuário.
+   > O `?connection_limit=1` é obrigatório no plano free: o pooler aceita ~15 conexões no total e a Vercel escala em várias instâncias. Sem esse limite o erro é `max clients reached in session mode`.
+   > O plano free pausa o banco após 1 semana sem uso — restaure pelo painel do Supabase quando isso acontecer (o sintoma é `Can't reach database server`).
 3. Gere o `AUTH_SECRET`: `openssl rand -base64 32`. Gere também `TOKEN_PEPPER` e `CRON_SECRET`: `openssl rand -hex 32`.
 4. Crie as tabelas e aplique as proteções:
 ```bash
