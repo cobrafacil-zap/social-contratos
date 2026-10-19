@@ -16,6 +16,16 @@ export function LoginForm({ next }: { next: string }) {
         <label htmlFor="password" className="mb-1.5 block text-sm font-semibold">Senha</label>
         <input id="password" name="password" type="password" autoComplete="current-password" required className="field" />
       </div>
+      <label className="flex cursor-pointer items-center gap-2.5 text-sm text-ink-soft">
+        <input
+          type="checkbox"
+          name="remember"
+          value="on"
+          defaultChecked
+          className="h-4 w-4 rounded border-paper-line text-cobalt focus:ring-cobalt/30"
+        />
+        Manter conectado por 30 dias
+      </label>
       {state.error && (
         <p role="alert" className="rounded-lg bg-bad-tint px-3.5 py-2.5 text-sm text-bad">{state.error}</p>
       )}
@@ -23,6 +33,9 @@ export function LoginForm({ next }: { next: string }) {
         {pending && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
         {pending ? "Entrando…" : "Entrar"}
       </button>
+      <p className="text-center text-xs text-ink-mute">
+        Sem "manter conectado", a sessão expira em 8 horas.
+      </p>
     </form>
   );
 }

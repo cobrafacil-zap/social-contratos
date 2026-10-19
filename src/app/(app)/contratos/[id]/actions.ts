@@ -9,6 +9,7 @@ import { requireUser } from "@/server/session";
 import { rateLimit } from "@/server/security/rate-limit";
 import { nextContractNumber, randomToken, hashToken, sha256 } from "@/lib/contract";
 import { createSignerFields } from "@/lib/signature-fields";
+import { sendEmail, signatureRequestEmail, isEmailConfigured } from "@/lib/email";
 import { buildContractHtml, getTemplateHtml } from "../html";
 import {
   contractUpdateSchema,
@@ -71,11 +72,14 @@ export async function sendForSignatureAction(
   }
 
   const contractId = str(formData.get("contractId"));
+  const sendEmailChecked = formData.get("sendEmail") === "on" || formData.get("sendEmail") === "true";
   const contract = await db.contract.findFirst({
     where: { id: contractId, companyId, deletedAt: null },
     select: {
       id: true,
       status: true,
+      title: true,
+      number: true,
       currentVersionId: true,
       _count: { select: { signers: { where: { status: "SIGNED" } } } },
     },
@@ -136,6 +140,13 @@ export async function sendForSignatureAction(
   const origin = await currentOrigin();
   const tokenExpiresAt = new Date(Date.now() + SIGNATURE_DAYS * 86_400_000);
   const links: { name: string; email: string; url: string }[] = [];
+  const emailErrors: string[] = [];
+  let emailed = 0;
+
+  const company = await db.company.findUnique({
+    where: { id: companyId },
+    select: { name: true },
+  });
 
   for (const [index, signer] of signers.entries()) {
     const token = randomToken();
@@ -154,7 +165,24 @@ export async function sendForSignatureAction(
     });
     // Cria os campos de preenchimento (nome, CPF, data e assinatura) do signatário.
     await createSignerFields(current.id, created.id, signer.role);
-    links.push({ name: signer.name, email: signer.email, url: `${origin}/s/${token}` });
+    const url = `${origin}/s/${token}`;
+    links.push({ name: signer.name, email: signer.email, url });
+
+    // Envia o link de assinatura para o e-mail do signatário.
+    if (sendEmailChecked) {
+      const mail = signatureRequestEmail({
+        companyName: company?.name ?? "Social Sign",
+        contractTitle: contract.title,
+        contractNumber: contract.number,
+        signerName: signer.name,
+        role: signer.role,
+        signUrl: url,
+        expiresAt: tokenExpiresAt,
+      });
+      const result = await sendEmail({ to: signer.email, subject: mail.subject, html: mail.html, text: mail.text });
+      if (result.ok) emailed += 1;
+      else emailErrors.push(`${signer.email}: ${result.error ?? "falha desconhecida"}`);
+    }
   }
 
   await db.contractVersion.update({
@@ -178,7 +206,7 @@ export async function sendForSignatureAction(
     },
   });
 
-  return { links };
+  return { links, emailed, emailErrors, emailConfigured: isEmailConfigured() };
 }
 
 /* -------------------------------------------------------------------------- */

@@ -121,7 +121,9 @@ export default async function NewContractPage({
         vaults={vaultOptions}
         company={companyOption}
         defaultTemplateId={sp.templateId ?? undefined}
-        defaultClientId={sp.clientId ?? undefined}
+        defaultClient={
+          sp.clientId ? (clientOptions.find((c) => c.id === sp.clientId) ?? null) : null
+        }
       />
     </div>
   );

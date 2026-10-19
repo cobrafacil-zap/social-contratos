@@ -67,7 +67,10 @@ export async function createContractAction(
   }
 
   const payload = {
-    clientId: str(formData.get("clientId")),
+    clientName: str(formData.get("clientName")),
+    clientEmail: str(formData.get("clientEmail")),
+    clientDocument: str(formData.get("clientDocument")),
+    clientAddress: str(formData.get("clientAddress")),
     title: str(formData.get("title")),
     templateId: str(formData.get("templateId")),
     value: str(formData.get("value")),
@@ -101,17 +104,40 @@ export async function createContractAction(
     };
   }
 
-  // Cliente precisa existir na empresa da sessão.
-  const client = await db.client.findFirst({
-    where: { id: data.clientId, companyId, deletedAt: null },
-    select: { id: true, name: true },
+  // O cliente não precisa estar cadastrado: criamos (ou reaproveitamos) pelo e-mail.
+  const clientEmail = data.clientEmail.toLowerCase();
+  const existingClient = await db.client.findFirst({
+    where: { companyId, email: clientEmail, deletedAt: null },
+    select: { id: true, name: true, document: true, address: true },
   });
-  if (!client) {
-    return {
-      error: "Cliente não encontrado.",
-      fieldErrors: { clientId: "Selecione um cliente válido" },
-      invalidStep: 1,
+
+  let client: { id: string; name: string };
+  if (existingClient) {
+    // Atualiza os dados de contato sem sobrescrever o que já existia.
+    client = {
+      id: existingClient.id,
+      name: existingClient.name,
     };
+    await db.client.update({
+      where: { id: existingClient.id },
+      data: {
+        document: data.clientDocument || existingClient.document || null,
+        address: data.clientAddress || existingClient.address || null,
+      },
+    });
+  } else {
+    const created = await db.client.create({
+      data: {
+        companyId,
+        name: data.clientName,
+        email: clientEmail,
+        document: data.clientDocument || null,
+        address: data.clientAddress || null,
+        createdBy: userId,
+      },
+      select: { id: true, name: true },
+    });
+    client = created;
   }
 
   // Modelo (opcional) precisa existir na empresa da sessão.

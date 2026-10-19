@@ -67,6 +67,12 @@ export type SendContractState = {
   fieldErrors?: Record<string, string>;
   /** Links de assinatura gerados (token em claro, exibido uma única vez). */
   links?: { name: string; email: string; url: string }[];
+  /** Quantos e-mails com o link foram enviados com sucesso. */
+  emailed?: number;
+  /** Erros de envio por signatário. */
+  emailErrors?: string[];
+  /** Se o Resend está configurado no ambiente. */
+  emailConfigured?: boolean;
 };
 
 /* -------------------------------------------------------------------------- */
@@ -115,9 +121,17 @@ export const signersSchema = z
   .min(1, "Adicione ao menos um signatário")
   .max(20, "No máximo 20 signatários");
 
-/** Passo 1 — dados do contrato. */
+/** Passo 1 — dados do contrato e do cliente (sem precisar cadastrar o cliente antes). */
 export const step1Schema = z.object({
-  clientId: z.string().trim().min(1, "Selecione o cliente"),
+  clientName: z.string().trim().min(2, "Informe o nome do cliente").max(120, "Nome muito longo"),
+  clientEmail: z.string().trim().toLowerCase().email("Informe um e-mail válido").max(254, "E-mail muito longo"),
+  clientDocument: z
+    .string()
+    .trim()
+    .max(20, "Documento muito longo")
+    .optional()
+    .or(z.literal("")),
+  clientAddress: z.string().trim().max(240, "Endereço muito longo").optional().or(z.literal("")),
   title: z.string().trim().min(3, "O título deve ter pelo menos 3 caracteres").max(160, "Título muito longo"),
   templateId: z.string().trim().optional(),
   value: optionalNumber,
@@ -177,7 +191,21 @@ export function fieldErrorsFrom(error: z.ZodError): Record<string, string> {
 
 /** Mapa campo -> passo do wizard (usado para voltar ao passo com erro). */
 export function stepForField(field: string): 1 | 2 | 3 {
-  if (["clientId", "title", "templateId", "value", "startDate", "endDate", "expiresInDays"].includes(field)) return 1;
+  if (
+    [
+      "clientName",
+      "clientEmail",
+      "clientDocument",
+      "clientAddress",
+      "title",
+      "templateId",
+      "value",
+      "startDate",
+      "endDate",
+      "expiresInDays",
+    ].includes(field)
+  )
+    return 1;
   if (["vaultId", "newVaultName", "newVaultDescription"].includes(field)) return 2;
   return 3;
 }

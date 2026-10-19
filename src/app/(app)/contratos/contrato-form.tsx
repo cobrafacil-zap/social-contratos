@@ -36,14 +36,14 @@ export function ContratoForm({
   vaults,
   company,
   defaultTemplateId,
-  defaultClientId,
+  defaultClient,
 }: {
   clients: ClientOption[];
   templates: TemplateOption[];
   vaults: VaultOption[];
   company: CompanyOption;
   defaultTemplateId?: string;
-  defaultClientId?: string;
+  defaultClient?: ClientOption | null;
 }) {
   const [state, formAction, pending] = useActionState<ContractFormState, FormData>(createContractAction, {});
   const router = useRouter();
@@ -51,7 +51,14 @@ export function ContratoForm({
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const [clientId, setClientId] = useState(defaultClientId ?? "");
+  const [clientName, setClientName] = useState(defaultClient?.name ?? "");
+  const [clientEmail, setClientEmail] = useState(defaultClient?.email ?? "");
+  const [clientDocument, setClientDocument] = useState(defaultClient?.document ?? "");
+  const [clientAddress, setClientAddress] = useState(
+    [defaultClient?.address, defaultClient?.city, defaultClient?.state, defaultClient?.zip]
+      .filter(Boolean)
+      .join(", ")
+  );
   const [title, setTitle] = useState("");
   const [templateId, setTemplateId] = useState(defaultTemplateId ?? "");
   const [value, setValue] = useState("");
@@ -67,10 +74,6 @@ export function ContratoForm({
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [signers, setSigners] = useState<SignerInput[]>([{ ...EMPTY_SIGNER }]);
 
-  const selectedClient = useMemo(
-    () => clients.find((c) => c.id === clientId) ?? null,
-    [clients, clientId]
-  );
   const selectedTemplate = useMemo(
     () => templates.find((t) => t.id === templateId) ?? null,
     [templates, templateId]
@@ -81,14 +84,6 @@ export function ContratoForm({
   );
 
   const suggestions = useMemo<Record<string, string>>(() => {
-    const address = [
-      selectedClient?.address,
-      selectedClient?.city,
-      selectedClient?.state,
-      selectedClient?.zip,
-    ]
-      .filter(Boolean)
-      .join(", ");
     return {
       empresa_nome: company.name,
       empresa_razao_social: company.legalName ?? company.name,
@@ -97,19 +92,19 @@ export function ContratoForm({
       empresa_endereco: company.address ?? "",
       empresa_telefone: company.phone ?? "",
       empresa_email: company.email ?? "",
-      cliente_nome: selectedClient?.name ?? "",
-      cliente_documento: selectedClient?.document ?? "",
-      cliente_email: selectedClient?.email ?? "",
-      cliente_empresa: selectedClient?.companyName ?? "",
-      cliente_endereco: address,
-      cliente_cidade: selectedClient?.city ?? "",
-      cliente_uf: selectedClient?.state ?? "",
-      cliente_cep: selectedClient?.zip ?? "",
+      cliente_nome: clientName,
+      cliente_documento: clientDocument,
+      cliente_email: clientEmail,
+      cliente_empresa: clientName,
+      cliente_endereco: clientAddress,
+      cliente_cidade: "",
+      cliente_uf: "",
+      cliente_cep: "",
       valor: value ? formatCurrency(value) : "",
       data_inicio: startDate ? formatDateInput(startDate) : "",
       data_fim: endDate ? formatDateInput(endDate) : "",
     };
-  }, [company, selectedClient, value, startDate, endDate]);
+  }, [company, clientName, clientDocument, clientEmail, clientAddress, value, startDate, endDate]);
 
   // Mantém as variáveis em sincronia com o modelo escolhido e com os valores
   // sugeridos — valores já editados pelo usuário não são sobrescritos.
@@ -134,7 +129,10 @@ export function ContratoForm({
   function validateStep(target: 1 | 2 | 3): boolean {
     if (target === 1) {
       const parsed = step1Schema.safeParse({
-        clientId,
+        clientName,
+        clientEmail,
+        clientDocument,
+        clientAddress,
         title,
         templateId,
         value,
@@ -236,48 +234,106 @@ export function ContratoForm({
       <section hidden={step !== 1} className="space-y-5">
         <div className="grid gap-5 md:grid-cols-2">
           <div>
-            <label htmlFor="clientId" className="mb-1.5 block text-sm font-semibold">
-              Cliente <span className="text-bad">*</span>
+            <label htmlFor="clientName" className="mb-1.5 block text-sm font-semibold">
+              Nome do cliente <span className="text-bad">*</span>
             </label>
-            <select
-              id="clientId"
-              name="clientId"
-              value={clientId}
+            <input
+              id="clientName"
+              name="clientName"
+              type="text"
+              value={clientName}
+              onChange={(e) => setClientName(e.target.value)}
+              placeholder="Maria Souza"
+              autoComplete="name"
+              className={inputClass("clientName")}
+            />
+            {fieldError("clientName") && (
+              <p className="mt-1 text-xs text-bad">{fieldError("clientName")}</p>
+            )}
+          </div>
+
+          <div>
+            <label htmlFor="clientEmail" className="mb-1.5 block text-sm font-semibold">
+              E-mail do cliente <span className="text-bad">*</span>
+            </label>
+            <input
+              id="clientEmail"
+              name="clientEmail"
+              type="email"
+              value={clientEmail}
+              list="clientes-anteriores"
               onChange={(e) => {
-                const next = e.target.value;
-                setClientId(next);
-                if (next === "__novo__") router.push("/clientes/novo");
+                const email = e.target.value;
+                setClientEmail(email);
+                // Se o e-mail já é de um cliente anterior, completa os dados.
+                const known = clients.find((c) => c.email.toLowerCase() === email.trim().toLowerCase());
+                if (known) {
+                  setClientName((prev) => prev || known.name);
+                  setClientDocument((prev) => prev || known.document || "");
+                  setClientAddress(
+                    (prev) =>
+                      prev ||
+                      [known.address, known.city, known.state, known.zip].filter(Boolean).join(", ")
+                  );
+                }
               }}
-              className={inputClass("clientId")}
-            >
-              <option value="">Selecione o cliente</option>
-              {clients.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                  {c.document ? ` — ${c.document}` : ""}
-                </option>
-              ))}
-              <option value="__novo__">＋ Novo cliente</option>
-            </select>
-            {clientId === "__novo__" ? (
-              <p className="mt-1.5 text-xs text-ink-mute">
-                <Link href="/clientes/novo" className="font-semibold text-cobalt underline">
-                  Cadastrar novo cliente
-                </Link>{" "}
-                — você voltará para esta página depois.
-              </p>
-            ) : (
-              <p className="mt-1.5 text-xs text-ink-mute">
-                Não acha o cliente?{" "}
-                <Link href="/clientes/novo" className="font-semibold text-cobalt underline">
-                  Cadastre agora
-                </Link>
-                .
-              </p>
+              placeholder="maria@empresa.com"
+              autoComplete="email"
+              className={inputClass("clientEmail")}
+            />
+            {clients.length > 0 && (
+              <datalist id="clientes-anteriores">
+                {clients.map((c) => (
+                  <option key={c.id} value={c.email}>
+                    {c.name}
+                  </option>
+                ))}
+              </datalist>
             )}
-            {fieldError("clientId") && (
-              <p className="mt-1 text-xs text-bad">{fieldError("clientId")}</p>
+            {fieldError("clientEmail") && (
+              <p className="mt-1 text-xs text-bad">{fieldError("clientEmail")}</p>
             )}
+          </div>
+
+          <div className="md:col-span-2 -mt-2">
+            <p className="text-xs text-ink-mute">
+              Não precisa cadastrar o cliente antes — informamos o e-mail aqui e o link de assinatura
+              vai direto para ele. Se quiser o histórico completo, o cliente é salvo automaticamente em{" "}
+              <Link href="/clientes" className="font-semibold text-cobalt underline">
+                Clientes
+              </Link>
+              .
+            </p>
+          </div>
+
+          <div>
+            <label htmlFor="clientDocument" className="mb-1.5 block text-sm font-semibold">
+              CPF / CNPJ do cliente
+            </label>
+            <input
+              id="clientDocument"
+              name="clientDocument"
+              type="text"
+              value={clientDocument}
+              onChange={(e) => setClientDocument(e.target.value)}
+              placeholder="000.000.000-00"
+              className={inputClass("clientDocument")}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="clientAddress" className="mb-1.5 block text-sm font-semibold">
+              Endereço do cliente
+            </label>
+            <input
+              id="clientAddress"
+              name="clientAddress"
+              type="text"
+              value={clientAddress}
+              onChange={(e) => setClientAddress(e.target.value)}
+              placeholder="Rua, número, bairro, cidade"
+              className={inputClass("clientAddress")}
+            />
           </div>
 
           <div>

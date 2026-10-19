@@ -1,7 +1,10 @@
-# Social Sign — Módulo 0 (fundação)
+# Social Sign — plataforma de contratos com assinatura eletrônica
 
-Plataforma de contratos com assinatura eletrônica. Este módulo entrega: projeto Next.js 15, schema completo do banco,
-login seguro, layout responsivo e dashboard com dados reais do banco.
+Plataforma de contratos com assinatura eletrônica: o cliente recebe o documento por e-mail, assina direto no navegador
+(nome digitado ou assinatura desenhada) e a empresa tem a prova — documento, data, hora, IP, dispositivo e código único.
+
+> 📖 **Guia completo dentro do app:** em `/ajuda` (menu lateral → *Como usar*) tem o passo a passo, mensagens prontas
+> para copiar, FAQ e glossário. Este README traz o passo a passo técnico.
 
 ## 1. Instalar
 ```bash
@@ -36,8 +39,16 @@ Depois do seed, remova a senha do `.env`.
 No Supabase: *Storage → New bucket* chamado `contracts`, **privado** (não marque Public).
 Preencha `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`. A service role key só é usada no servidor — nunca a exponha no frontend.
 
-## 4. E-mail (usado a partir do Módulo 5)
-Crie conta no Resend, verifique seu domínio e preencha `RESEND_API_KEY` e `EMAIL_FROM`.
+## 4. E-mail (Resend) — para enviar o contrato ao cliente
+1. Crie conta em **resend.com** e verifique o seu domínio (ou use o remetente de teste `onboarding@resend.dev`).
+2. Copie a **API key** (*API Keys → Create API Key*).
+3. Preencha no `.env` **e** nas variáveis de ambiente do Vercel:
+```
+RESEND_API_KEY="re_xxxxxxxxxxxxx"
+EMAIL_FROM="Social Sign <contratos@seudominio.com>"
+```
+4. Sem essas variáveis o app **continua funcionando**: o link de assinatura aparece na tela para você enviar
+   manualmente (por WhatsApp, e-mail ou outro canal). A página *Configurações → Integrações* mostra o status.
 
 ## 5. Rodar localmente
 ```bash
@@ -49,7 +60,73 @@ npm run dev    # http://localhost:3000
 2. Cadastre todas as variáveis do `.env.example` em *Settings → Environment Variables* (`APP_URL` = URL final).
 3. O build já roda `prisma generate`. Aplique migrations em produção com `npm run db:deploy` e depois `npm run db:guards`.
 
-## 7. Módulos implementados
+---
+
+## Passo a passo do processo (do zero ao contrato assinado)
+
+### Passo 1 — Criar a conta da empresa
+Abra `/cadastro` e preencha: nome da empresa, seu nome, e-mail e senha (mínimo 12 caracteres).
+**Não precisa confirmar e-mail**: a conta é criada e você entra direto no painel.
+
+### Passo 2 — Conferir a empresa
+Em `/empresa` você ajusta nome, razão social, CNPJ, **cor primária** (aparece no documento), **prefixo dos contratos**
+(ex.: `SOC` → `SOC-2026-0001`) e o responsável. Em `/empresa/equipe` você adiciona Collaboradores e define o papel de cada um.
+
+### Passo 3 — Criar o contrato (sem cadastrar o cliente antes)
+Em `/contratos/novo`, o wizard tem 3 passos:
+
+1. **Dados** — nome e **e-mail do cliente**, CPF/CNPJ (opcional), endereço (opcional), título do contrato, modelo,
+   valor, data de início/fim e validade do link.
+   *Você não precisa criar o cliente antes*: o sistema cria (ou reaproveita, pelo e-mail) o registro do cliente sozinho.
+   Se o e-mail já existir na empresa, os dados são completados automaticamente.
+2. **Cofre** — escolha em qual cofre guardar o contrato, ou marque **"＋ Criar novo cofre"** e digite o nome na hora.
+3. **Variáveis e signatários** — o app detectou as variáveis do modelo escolhido (`{{cliente_nome}}`, `{{valor}}`,
+   `{{data_inicio}}`…) e já sugere os valores; você ajusta o que quiser e cadastra os **signatários**
+   (nome, e-mail e papel: Contratante, Testemunha…).
+
+### Passo 4 — Enviar para o cliente
+Na tela do contrato, em **"Enviar para assinatura"**:
+
+- informe os signatários (nome, e-mail, papel);
+- deixe marcado **"Enviar o link por e-mail para cada signatário"**;
+- clique em **Enviar para assinatura**.
+
+O que acontece:
+- a versão atual do documento é **travada** (não pode mais ser alterada);
+- é gerado um **link individual** `/s/<token>` para cada signatário (o token é gravado apenas como hash);
+- o cliente **recebe o e-mail** com o link, o nome do documento e a data de validade;
+- os links também aparecem na tela, com botão **Copiar** — úteis para mandar por WhatsApp.
+
+> **Importante:** o link em claro só aparece logo após o envio. Se você recarregar a página e perder os links,
+> use **"Gerar novos links"** (disponível enquanto ninguém tiver assinado). Os links antigos deixam de funcionar.
+
+### Passo 5 — O cliente assina
+O cliente abre o link no celular (não precisa criar conta nem instalar nada) e:
+1. lê o documento completo;
+2. preenche os campos (nome, CPF, data);
+3. assina **digitando o nome** ou **desenhando** no quadro com o dedo/mouse;
+4. marca a caixa de concordância e confirma.
+
+Cada assinatura registra **documento, data/hora, IP, user-agent e um código único**. Se ele recusar, é possível
+informar o motivo — a empresa recebe a notificação.
+
+### Passo 6 — Acompanhar
+- `/assinaturas` — prova de cada assinatura, com IP, código e **certificado imprimível**; exporte em CSV.
+- `/notificacoes` — avisos de assinatura, recusa e envio.
+- `/contratos` — status de tudo (Rascunho → Enviado → Assinado).
+- `/cofre` — documentos guardados, organized por cofre.
+
+### Passo 7 — Configurar
+Em `/configuracoes`: preferências (dias padrão de validade, exigir aceite dos termos), diagnóstico das variáveis
+de ambiente, logs de atividade e status das integrações (Supabase Storage e Resend).
+
+### Passo 8 — Conta
+Em `/conta`: dados do perfil e troca de senha. No **login** há a opção **"Manter conectado por 30 dias"** — sem ela,
+a sessão expira em 8 horas.
+
+---
+
+## Módulos implementados
 | Módulo | Rotas | O que faz |
 |--------|-------|-----------|
 | Dashboard | `/dashboard` | Métricas de contratos, clientes, assinaturas e notificações |

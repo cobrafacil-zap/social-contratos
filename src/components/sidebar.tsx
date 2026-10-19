@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
-import { LayoutDashboard, FileText, FilePlus2, Copy, Users, Vault, PenLine, Bell, Settings, Building2, UserCircle } from "lucide-react";
+import { LayoutDashboard, FileText, FilePlus2, Copy, Users, Vault, PenLine, Bell, Settings, Building2, UserCircle, HelpCircle } from "lucide-react";
 import { Logo } from "./logo";
 
 type Item = { label: string; href: string; icon: React.ComponentType<{ className?: string }>; ready: boolean };
@@ -24,6 +24,7 @@ const GROUPS: { title?: string; items: Item[] }[] = [
     { label: "Configurações", href: "/configuracoes", icon: Settings, ready: true },
     { label: "Minha empresa", href: "/empresa", icon: Building2, ready: true },
     { label: "Minha conta", href: "/conta", icon: UserCircle, ready: true },
+    { label: "Como usar", href: "/ajuda", icon: HelpCircle, ready: true },
   ] },
 ];
 

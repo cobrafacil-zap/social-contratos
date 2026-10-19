@@ -6,7 +6,11 @@ import { authConfig } from "./auth.config";
 import { db } from "@/server/db";
 import { rateLimit } from "@/server/security/rate-limit";
 
-const schema = z.object({ email: z.string().email().max(254), password: z.string().min(1).max(200) });
+const schema = z.object({
+  email: z.string().email().max(254),
+  password: z.string().min(1).max(200),
+  remember: z.union([z.literal("on"), z.literal("true"), z.literal("1")]).optional(),
+});
 
 // Hash falso (formato scrypt salt:hash) para igualar o tempo de resposta quando o e-mail não existe.
 const DUMMY_SALT = "0000000000000000";
@@ -33,7 +37,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         await db.activityLog.create({
           data: { companyId: user.companyId, userId: user.id, action: "LOGIN", entity: "User", entityId: user.id },
         });
-        return { id: user.id, name: user.name, email: user.email, role: user.role, companyId: user.companyId };
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          companyId: user.companyId,
+          remember: Boolean(parsed.data.remember),
+        };
       },
     }),
   ],
