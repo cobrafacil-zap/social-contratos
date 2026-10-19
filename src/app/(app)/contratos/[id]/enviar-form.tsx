@@ -15,9 +15,11 @@ const ROLE_SUGGESTIONS = ["Contratante", "Contratada", "Testemunha", "Representa
 export function EnviarForm({
   contractId,
   initialSigners,
+  mode = "send",
 }: {
   contractId: string;
   initialSigners: SignerInput[];
+  mode?: "send" | "resend";
 }) {
   const [state, formAction, pending] = useActionState<SendContractState, FormData>(
     sendForSignatureAction,
@@ -122,7 +124,11 @@ export function EnviarForm({
           ) : (
             <Send className="h-4 w-4" aria-hidden />
           )}
-          {pending ? "Enviando..." : "Enviar para assinatura"}
+          {pending
+            ? "Gerando..."
+            : mode === "resend"
+              ? "Gerar novos links"
+              : "Enviar para assinatura"}
         </button>
       </div>
 

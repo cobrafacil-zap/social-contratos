@@ -58,6 +58,12 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
 
   const plannedSigners = getVersionSigners(currentVersion?.content);
   const canEdit = EDITABLE_STATUSES.includes(contract.status);
+  // Só é possível (re)enviar enquanto nenhum signatário tiver assinado: depois
+  // disso os links existentes já podem ter sido usados.
+  const hasSignature = contract.signers.some((s) => s.status === "SIGNED");
+  const canResend =
+    !hasSignature &&
+    ["DRAFT", "SENT", "VIEWED", "AWAITING", "PARTIALLY_SIGNED", "EXPIRED"].includes(contract.status);
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -212,9 +218,10 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
             <CardHeader
               title="Signatários"
               action={
-                contract.status === "DRAFT" ? (
+                canResend ? (
                   <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-cobalt">
-                    <Send className="h-4 w-4" aria-hidden /> Enviar
+                    <Send className="h-4 w-4" aria-hidden />
+                    {contract.status === "DRAFT" ? "Enviar" : "Links"}
                   </span>
                 ) : undefined
               }
@@ -261,15 +268,31 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
                 />
               )}
 
-              {contract.status === "DRAFT" && (
+              {canResend && (
                 <div className="mt-5 border-t border-paper-line pt-5">
-                  <h3 className="text-sm font-bold">Enviar para assinatura</h3>
+                  <h3 className="text-sm font-bold">
+                    {contract.status === "DRAFT" ? "Enviar para assinatura" : "Gerar novos links de assinatura"}
+                  </h3>
                   <p className="mt-1 text-sm text-ink-mute">
-                    Ao enviar, a versão atual é travada e os links de assinatura são gerados
-                    (o token fica salvo apenas como hash).
+                    {contract.status === "DRAFT" ? (
+                      <>
+                        Ao enviar, a versão atual é travada e os links de assinatura são gerados
+                        (o token fica salvo apenas como hash).
+                      </>
+                    ) : (
+                      <>
+                        O link em claro não é salvo, então só aparece logo após a ação. Se você
+                        perdeu os links, gere novos abaixo — os signatários que ainda não assinaram
+                        recebem links novos e os anteriores deixam de funcionar.
+                      </>
+                    )}
                   </p>
                   <div className="mt-4">
-                    <EnviarForm contractId={contract.id} initialSigners={plannedSigners} />
+                    <EnviarForm
+                      contractId={contract.id}
+                      initialSigners={plannedSigners}
+                      mode={contract.status === "DRAFT" ? "send" : "resend"}
+                    />
                   </div>
                 </div>
               )}

@@ -58,13 +58,11 @@ export default async function NotificacoesPage({ searchParams }: { searchParams:
         title="Notificações"
         description="Avisos sobre assinaturas, recusas e documentos da sua empresa."
         action={
-          unreadCount > 0 ? (
-            <form action={markAllRead}>
-              <button type="submit" className="btn">
-                Marcar todas como lidas
-              </button>
-            </form>
-          ) : undefined
+          <form action={markAllRead}>
+            <button type="submit" disabled={unreadCount === 0} className="btn">
+              Marcar todas como lidas
+            </button>
+          </form>
         }
       />
 

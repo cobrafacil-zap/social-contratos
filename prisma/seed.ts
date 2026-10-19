@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { hash } from "bcryptjs";
+import { hashPassword } from "../src/server/password";
 
 const db = new PrismaClient();
 
@@ -9,21 +9,33 @@ async function main() {
   if (!email || !password) throw new Error("Defina SEED_ADMIN_EMAIL e SEED_ADMIN_PASSWORD no .env");
   if (password.length < 12) throw new Error("SEED_ADMIN_PASSWORD deve ter ao menos 12 caracteres");
 
-  if (await db.user.findUnique({ where: { email } })) {
+  const existing = await db.user.findUnique({ where: { email } });
+  if (existing) {
     console.log("Administrador já existe. Nada a fazer.");
     return;
   }
-  const company = await db.company.create({ data: { name: process.env.SEED_COMPANY_NAME || "Minha Empresa" } });
+
+  const company = await db.company.create({
+    data: { name: process.env.SEED_COMPANY_NAME || "Minha Empresa" },
+  });
+
   await db.user.create({
     data: {
       companyId: company.id,
       name: process.env.SEED_ADMIN_NAME || "Administrador",
       email,
       role: "ADMIN",
-      passwordHash: await hash(password, 12), // bcrypt
+      // Mesmo algoritmo usado no login (scrypt) — ver src/server/password.ts
+      passwordHash: await hashPassword(password),
     },
   });
+
   console.log(`Empresa e administrador criados: ${email}`);
 }
 
-main().finally(() => db.$disconnect());
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(() => db.$disconnect());

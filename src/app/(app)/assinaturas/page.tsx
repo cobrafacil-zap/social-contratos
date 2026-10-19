@@ -295,7 +295,7 @@ export default async function AssinaturasPage({ searchParams }: { searchParams: 
                       <td className="px-5 py-4">
                         <Link
                           href={`/assinaturas/${sig.id}/certificado`}
-                          className="inline-flex h-9 items-center rounded-lg border border-paper-line bg-white px-3 text-sm font-semibold text-ink-soft hover:bg-paper"
+                          className="inline-flex h-9 items-center whitespace-nowrap rounded-lg border border-paper-line bg-white px-3 text-sm font-semibold text-ink-soft hover:bg-paper"
                         >
                           Ver certificado
                         </Link>

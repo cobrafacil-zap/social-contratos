@@ -73,11 +73,25 @@ export async function sendForSignatureAction(
   const contractId = str(formData.get("contractId"));
   const contract = await db.contract.findFirst({
     where: { id: contractId, companyId, deletedAt: null },
-    select: { id: true, status: true, currentVersionId: true },
+    select: {
+      id: true,
+      status: true,
+      currentVersionId: true,
+      _count: { select: { signers: { where: { status: "SIGNED" } } } },
+    },
   });
   if (!contract) return { error: "Contrato não encontrado." };
-  if (contract.status !== "DRAFT") {
-    return { error: "Somente contratos em rascunho podem ser enviados para assinatura." };
+
+  // Rascunho: envia pela primeira vez. Outros status: reenvio, permitido apenas
+  // enquanto nenhum signatário tiver assinado (o link em claro não fica salvo).
+  const SENDABLE = ["DRAFT", "SENT", "VIEWED", "AWAITING", "PARTIALLY_SIGNED", "EXPIRED"];
+  if (!SENDABLE.includes(contract.status)) {
+    return { error: "Este contrato não pode mais ser enviado para assinatura." };
+  }
+  if (contract.status !== "DRAFT" && contract._count.signers > 0) {
+    return {
+      error: "Já existe uma assinatura registrada neste contrato. Não é possível gerar novos links.",
+    };
   }
 
   // Versão que será enviada: a atual (ou a mais recente, se não houver atual).

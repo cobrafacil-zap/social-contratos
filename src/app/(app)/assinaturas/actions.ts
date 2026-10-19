@@ -48,10 +48,11 @@ function parseDay(value: string, end: boolean): Date | null {
  * A resposta volta como string para o cliente exibir e copiar.
  */
 export async function exportarAssinaturas(_: CsvState, formData: FormData): Promise<CsvState> {
-  try {
-    const session = await requireUser();
-    const { companyId, userId } = session;
+  // Fora do try: o redirect de requireUser() não pode ser engolido pelo catch.
+  const session = await requireUser();
+  const { companyId, userId } = session;
 
+  try {
     if (!rateLimit(`assinaturas:export:${userId}`, 10, 60_000)) {
       return { error: "Muitas exportações em pouco tempo. Aguarde um minuto e tente novamente." };
     }
