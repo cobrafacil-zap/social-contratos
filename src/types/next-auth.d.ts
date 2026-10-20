@@ -17,5 +17,7 @@ declare module "next-auth/jwt" {
     role?: string;
     companyId?: string;
     remember?: boolean;
+    /** Unix timestamp de início da sessão curta (8 h). */
+    shortLivedAt?: number;
   }
 }

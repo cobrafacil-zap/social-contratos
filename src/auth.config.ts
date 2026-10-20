@@ -1,6 +1,4 @@
 import type { NextAuthConfig } from "next-auth";
-import { encode, type JWTEncodeParams } from "next-auth/jwt";
-import type { JWT } from "next-auth/jwt";
 
 // Rotas públicas: assinatura do cliente (por token), verificação, páginas legais, webhooks e cron.
 export const PUBLIC = ["/login", "/cadastro", "/s/", "/verificar/", "/privacidade", "/termos", "/api/public/", "/api/webhooks/", "/api/cron/", "/api/auth"];
@@ -12,23 +10,11 @@ export const REMEMBER_MAX_AGE = 60 * 60 * 24 * 30;
 
 export const authConfig = {
   pages: { signIn: "/login" },
-  // O cookie vive 30 dias (limite máximo). O token JWT é que expira em 8 h
-  // quando o usuário não marca "manter conectado" — ver o encode customizado.
+  // O cookie e o token vivem 30 dias (limite máximo). Sessões sem "manter
+  // conectado" expiram em 8 h — isso é aplicado no callback `session`, que
+  // devolve `null` quando a sessão já passou do prazo.
   session: { strategy: "jwt", maxAge: REMEMBER_MAX_AGE },
   providers: [],
-  jwt: {
-    maxAge: REMEMBER_MAX_AGE,
-    // Define a validade do token conforme a escolha feita no login.
-    async encode({ token, secret, salt }: JWTEncodeParams<JWT>) {
-      const remember = Boolean(token?.remember);
-      return encode({
-        token: token ?? {},
-        secret,
-        salt,
-        maxAge: remember ? REMEMBER_MAX_AGE : SESSION_MAX_AGE,
-      });
-    },
-  },
   callbacks: {
     authorized({ auth, request }) {
       const path = request.nextUrl.pathname;
@@ -42,10 +28,20 @@ export const authConfig = {
         token.companyId = user.companyId;
         // "Manter conectado" escolhido no login
         token.remember = Boolean((user as { remember?: boolean }).remember);
+        // Momento em que a sessão de 8 h começa a contar (para quem não marcou
+        // "manter conectado"). Quem marcou recebe 30 dias.
+        token.shortLivedAt = token.remember ? 0 : Math.floor(Date.now() / 1000);
       }
       return token;
     },
     session({ session, token }) {
+      // Sessão curta (sem "manter conectado") expira em 8 h.
+      // O Auth.js permite devolver `null` aqui para invalidar a sessão,
+      // embora o tipo não reflita isso.
+      if (!token.remember && Number(token.shortLivedAt) > 0) {
+        const age = Math.floor(Date.now() / 1000) - Number(token.shortLivedAt);
+        if (age > SESSION_MAX_AGE) return null as unknown as typeof session;
+      }
       session.user.id = token.uid as string;
       session.user.role = token.role as string;
       session.user.companyId = token.companyId as string;

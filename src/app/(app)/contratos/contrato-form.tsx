@@ -126,6 +126,19 @@ export function ContratoForm({
 
   const fieldError = (name: string) => state.fieldErrors?.[name] ?? errors[name];
 
+  // Resumo dos erros de validação do passo atual, para o usuário saber o que corrigir.
+  const clientError = useMemo(() => {
+    if (state.error) return null;
+    const keys = Object.keys(errors);
+    if (keys.length === 0) return null;
+    const first = keys[0];
+    if (first === "_") return "Revise os campos destacados para continuar.";
+    const msg = errors[first];
+    if (!msg) return null;
+    const label = first === "signers" ? "os signatários" : `o campo "${first}"`;
+    return `Revise ${label}: ${msg}`;
+  }, [errors, state.error]);
+
   function validateStep(target: 1 | 2 | 3): boolean {
     if (target === 1) {
       const parsed = step1Schema.safeParse({
@@ -161,8 +174,34 @@ export function ContratoForm({
     return true;
   }
 
+  /**
+   * Navega entre os passos do wizard.
+   * Ao AVANÇAR valida o passo atual (é o que o usuário está vendo) e só
+   * muda de passo se estiver válido — assim o erro aparece na tela.
+   * Ao VOLTAR não valida nada.
+   */
   function goTo(target: 1 | 2 | 3) {
-    if (!validateStep(target)) return;
+    if (target > step) {
+      if (!validateStep(step)) return;
+    }
+    setStep(target);
+  }
+
+  /**
+   * Clique no indicador de passos: valida todos os passos entre o atual e o
+   * destino e para no primeiro inválido (para o usuário ver onde corrigir).
+   */
+  function jumpTo(target: 1 | 2 | 3) {
+    if (target < step) {
+      setStep(target);
+      return;
+    }
+    for (let s = step; s < target; s += 1) {
+      if (!validateStep(s as 1 | 2 | 3)) {
+        setStep(s as 1 | 2 | 3);
+        return;
+      }
+    }
     setStep(target);
   }
 
@@ -200,7 +239,7 @@ export function ContratoForm({
             <li key={s.id} className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => (done ? setStep(s.id) : goTo(s.id))}
+                onClick={() => jumpTo(s.id)}
                 className={`flex h-9 items-center gap-2 rounded-lg px-3 text-sm font-semibold transition-colors ${
                   active
                     ? "bg-cobalt text-white"
@@ -230,6 +269,12 @@ export function ContratoForm({
         </p>
       )}
 
+      {clientError && (
+        <p role="alert" className="rounded-lg bg-bad-tint px-3.5 py-2.5 text-sm text-bad">
+          {clientError}
+        </p>
+      )}
+
       {/* ------------------------------ PASSO 1 ------------------------------ */}
       <section hidden={step !== 1} className="space-y-5">
         <div className="grid gap-5 md:grid-cols-2">
@@ -244,7 +289,7 @@ export function ContratoForm({
               value={clientName}
               onChange={(e) => setClientName(e.target.value)}
               placeholder="Maria Souza"
-              autoComplete="name"
+              autoComplete="off"
               className={inputClass("clientName")}
             />
             {fieldError("clientName") && (
@@ -278,7 +323,7 @@ export function ContratoForm({
                 }
               }}
               placeholder="maria@empresa.com"
-              autoComplete="email"
+              autoComplete="off"
               className={inputClass("clientEmail")}
             />
             {clients.length > 0 && (
