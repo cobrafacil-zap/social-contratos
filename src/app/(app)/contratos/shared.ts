@@ -58,8 +58,16 @@ export type VersionContent = {
 export type ContractFormState = {
   error?: string;
   fieldErrors?: Record<string, string>;
-  /** Passo do wizard que contém o primeiro erro (1..3). */
-  invalidStep?: 1 | 2 | 3;
+  /** Passo do wizard que contém o primeiro erro (1..2). */
+  invalidStep?: 1 | 2;
+  /** Contrato criado e enviado com sucesso. */
+  success?: boolean;
+  /** Link de assinatura (exibido para envio manual). */
+  link?: string;
+  /** Quantos e-mails foram enviados. */
+  emailed?: number;
+  contractNumber?: string;
+  signerEmail?: string;
 };
 
 export type SendContractState = {
@@ -159,12 +167,10 @@ export const step3Schema = z.object({
 });
 
 /** Payload completo validado no servidor (criação). */
-export const contractPayloadSchema = step1Schema
-  .merge(z.object(step2Shape))
-  .extend({
-    variables: z.record(z.string().max(2000, "Texto muito longo")),
-    signers: signersSchema,
-  });
+export const contractPayloadSchema = step1Schema.merge(z.object(step2Shape)).extend({
+  /** Signatários são opcionais: podem ser definidos ao enviar para assinatura. */
+  signers: signersSchema.optional().or(z.array(z.never())),
+});
 
 /** Payload completo validado no servidor (edição). */
 export const contractUpdateSchema = z.object({
@@ -190,7 +196,7 @@ export function fieldErrorsFrom(error: z.ZodError): Record<string, string> {
 }
 
 /** Mapa campo -> passo do wizard (usado para voltar ao passo com erro). */
-export function stepForField(field: string): 1 | 2 | 3 {
+export function stepForField(field: string): 1 | 2 {
   if (
     [
       "clientName",
@@ -206,8 +212,7 @@ export function stepForField(field: string): 1 | 2 | 3 {
     ].includes(field)
   )
     return 1;
-  if (["vaultId", "newVaultName", "newVaultDescription"].includes(field)) return 2;
-  return 3;
+  return 2;
 }
 
 /** Lê os signatários previstos guardados no conteúdo de uma versão. */

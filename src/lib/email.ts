@@ -33,11 +33,13 @@ export async function sendEmail({
   subject,
   html,
   text,
+  headers,
 }: {
   to: string;
   subject: string;
   html: string;
   text?: string;
+  headers?: Record<string, string>;
 }): Promise<EmailResult> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -57,6 +59,7 @@ export async function sendEmail({
         subject,
         html,
         text: text ?? undefined,
+        headers: headers ?? undefined,
       }),
     });
 
@@ -159,5 +162,13 @@ Se você não esperava esta solicitação, ignore este e-mail.
 --
 ${companyName} via Social Sign`;
 
-  return { subject: `Assinatura pendente: ${contractTitle} (${contractNumber})`, html, text };
+  // Headers que ajudam o Gmail (e o Outlook) a entregar na caixa de entrada:
+  // identificam o remetente legítimo e oferecem descadastro em um clique.
+  const headers: Record<string, string> = {
+    "List-Unsubscribe": `<mailto:contatocomercialsocial@gmail.com?subject=Remover%20inscricao>`,
+    "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+    "X-Entity-Ref-ID": `sm-contrato-${contractNumber}`,
+  };
+
+  return { subject: `Assinatura pendente: ${contractTitle} (${contractNumber})`, html, text, headers };
 }

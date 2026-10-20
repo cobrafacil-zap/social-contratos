@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { db } from "@/server/db";
 import { requireUser } from "@/server/session";
 import { extractVariables, humanizeVar } from "@/lib/contract";
-import { ContratoForm } from "../contrato-form";
+import { NovoContratoForm } from "../novo-contrato-form";
 import { getTemplateHtml } from "../html";
 import type { ClientOption, CompanyOption, TemplateOption, VaultOption } from "../shared";
 
@@ -111,11 +111,12 @@ export default async function NewContractPage({
         </Link>
         <h1 className="mt-3 text-2xl font-extrabold tracking-tight">Novo contrato</h1>
         <p className="mt-1 text-ink-mute">
-          Preencha os dados do contrato, escolha o cofre e defina as variáveis e os signatários.
+          Preencha uma tela só. O documento é montado com os dados do cliente e o link de
+          assinatura chega por e-mail automaticamente.
         </p>
       </div>
 
-      <ContratoForm
+      <NovoContratoForm
         clients={clientOptions}
         templates={templateOptions}
         vaults={vaultOptions}

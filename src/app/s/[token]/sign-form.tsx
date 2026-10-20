@@ -1,9 +1,10 @@
 "use client";
 import { useState } from "react";
 import { useActionState } from "react";
-import { Check, Loader2, ShieldCheck } from "lucide-react";
+import { Loader2, PenLine, ShieldCheck } from "lucide-react";
 import { signContractAction, refuseContractAction, type SignState } from "./actions";
 import { SignaturePad, type SignatureValue } from "./signature-pad";
+import { SuccessAnimation } from "./sign-animations";
 import { FIELD_TYPE } from "@/lib/status";
 
 type Field = {
@@ -29,21 +30,16 @@ export function SignForm({ token, fields, signerName }: { token: string; fields:
 
   if (state.success) {
     return (
-      <div className="rounded-xl border border-ok/30 bg-ok-tint p-6 text-center">
-        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-ok text-white">
-          <Check className="h-6 w-6" />
-        </div>
-        <p className="text-lg font-extrabold text-ok">{state.success}</p>
-        <p className="mt-1 text-sm text-ink-soft">
-          Uma cópia do documento com a assinatura foi registrada. Você pode fechar esta página.
-        </p>
-      </div>
+      <SuccessAnimation>
+        Uma cópia do documento com a assinatura foi registrada, junto de data, hora, IP e
+        dispositivo. Você pode fechar esta página com segurança.
+      </SuccessAnimation>
     );
   }
 
   if (state.refused) {
     return (
-      <div className="rounded-xl border border-warn/30 bg-warn-tint p-6 text-center">
+      <div className="ss-pop rounded-xl border border-warn/30 bg-warn-tint p-6 text-center">
         <p className="text-lg font-extrabold text-warn">{state.refused}</p>
       </div>
     );
@@ -75,8 +71,12 @@ export function SignForm({ token, fields, signerName }: { token: string; fields:
         </p>
       ) : (
         <div className="space-y-4">
-          {fields.map((f) => (
-            <div key={f.id}>
+          {fields.map((f, i) => (
+            <div
+              key={f.id}
+              className="ss-pop"
+              style={{ animationDelay: `${i * 70}ms` }}
+            >
               {f.type === "SIGNATURE" ? (
                 <SignaturePad
                   name={`field_${f.id}`}
@@ -115,7 +115,7 @@ export function SignForm({ token, fields, signerName }: { token: string; fields:
         </div>
       )}
 
-      <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-paper-line bg-white p-4">
+      <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-paper-line bg-white p-4 transition-all duration-200 hover:border-cobalt/40 hover:shadow-sm">
         <input
           type="checkbox"
           checked={terms}
@@ -129,14 +129,27 @@ export function SignForm({ token, fields, signerName }: { token: string; fields:
       </label>
 
       {state.error && (
-        <p role="alert" className="rounded-lg bg-bad-tint px-3.5 py-2.5 text-sm text-bad">
+        <p role="alert" className="ss-pop rounded-lg bg-bad-tint px-3.5 py-2.5 text-sm text-bad">
           {state.error}
         </p>
       )}
 
-      <button type="submit" disabled={pending || !terms} className="btn w-full">
-        {pending && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
-        {pending ? "Registrando..." : "Assinar documento"}
+      <button
+        type="submit"
+        disabled={pending || !terms}
+        className="btn h-12 w-full shadow-lg shadow-cobalt/20 transition-all duration-200 hover:shadow-xl hover:shadow-cobalt/30 active:scale-[0.99]"
+      >
+        {pending ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+            Registrando sua assinatura...
+          </>
+        ) : (
+          <>
+            <PenLine className="h-4 w-4" aria-hidden />
+            Assinar documento
+          </>
+        )}
       </button>
       {!terms && (
         <p className="text-center text-xs text-ink-mute">Marque a caixa de concordância para habilitar a assinatura.</p>

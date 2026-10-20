@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-  html { -webkit-text-size-adjust: 100%; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
   body { @apply bg-paper text-ink antialiased; }
   :focus-visible { @apply outline-2 outline-offset-2 outline-cobalt; }
 }
@@ -13,4 +13,95 @@
   .btn { @apply inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-cobalt px-5 text-[15px] font-semibold text-white transition-colors hover:bg-cobalt-dark disabled:cursor-not-allowed disabled:opacity-60; }
 }
 
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+/* -------------------------------------------------------------------------- */
+/* Animações da página pública de assinatura                                  */
+/* -------------------------------------------------------------------------- */
+
+/* Aparição suave ao rolar a página */
+@keyframes ss-fade-up {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* Entrada com leve escala */
+@keyframes ss-pop-in {
+  0%   { opacity: 0; transform: scale(0.94) translate3d(0, 10px, 0); }
+  100% { opacity: 1; transform: scale(1) translate3d(0, 0, 0); }
+}
+
+/* Desenho do check (stroke-dashoffset) */
+@keyframes ss-draw-check {
+  from { stroke-dashoffset: 48; }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* Pulso do anel ao redor do check */
+@keyframes ss-pulse-ring {
+  0%   { transform: scale(0.6); opacity: 0.55; }
+  70%  { transform: scale(1.35); opacity: 0; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+/* Brilho que percorre a barra de progresso */
+@keyframes ss-shimmer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(400%); }
+}
+
+/* Confete caindo */
+@keyframes ss-confetti {
+  0%   { opacity: 0; transform: translate3d(0, -20px, 0) rotate(0deg); }
+  10%  { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(var(--ss-drift, 0px), 220px, 0) rotate(var(--ss-spin, 320deg)); }
+}
+
+/* Flutuação suave do selo */
+@keyframes ss-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+@layer utilities {
+  .ss-reveal { opacity: 0; }
+  .ss-reveal.is-visible { animation: ss-fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+  .ss-pop { animation: ss-pop-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+  .ss-check-path {
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: ss-draw-check 0.65s cubic-bezier(0.65, 0, 0.35, 1) 0.15s forwards;
+  }
+
+  .ss-pulse-ring { animation: ss-pulse-ring 1.5s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+
+  .ss-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+    animation: ss-shimmer 2.4s ease-in-out infinite;
+  }
+
+  .ss-confetti {
+    position: absolute;
+    top: 0;
+    width: 8px;
+    height: 12px;
+    border-radius: 2px;
+    opacity: 0;
+    animation: ss-confetti 2.4s ease-in forwards;
+  }
+
+  .ss-float { animation: ss-float 4s ease-in-out infinite; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+  .ss-reveal { opacity: 1 !important; }
+  .ss-check-path { stroke-dashoffset: 0 !important; }
+}

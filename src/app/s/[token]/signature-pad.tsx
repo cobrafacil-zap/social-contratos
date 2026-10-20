@@ -77,15 +77,20 @@ export function SignaturePad({
   }
 
   return (
-    <div className="rounded-xl border border-paper-line bg-white p-4">
+    <div className="rounded-xl border border-paper-line bg-white p-4 transition-shadow duration-300 hover:shadow-md">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <span className="text-sm font-semibold">{label}</span>
-        <div className="flex gap-1.5">
+        <div className="relative flex gap-1.5 rounded-lg bg-paper p-1">
+          <span
+            className="absolute inset-y-1 w-[calc(50%-3px)] rounded-md bg-white shadow-sm transition-transform duration-300 ease-out"
+            style={{ transform: mode === "TYPED" ? "translateX(0)" : "translateX(calc(100% + 6px))" }}
+            aria-hidden
+          />
           <button
             type="button"
             onClick={useTyped}
-            className={`inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-semibold ${
-              mode === "TYPED" ? "bg-cobalt text-white" : "border border-paper-line text-ink-soft"
+            className={`relative z-10 inline-flex h-8 items-center gap-1.5 rounded-md px-3 text-xs font-semibold transition-colors duration-200 ${
+              mode === "TYPED" ? "text-ink" : "text-ink-mute hover:text-ink-soft"
             }`}
           >
             <Type className="h-3.5 w-3.5" /> Digitar
@@ -96,8 +101,8 @@ export function SignaturePad({
               setMode("DRAWN");
               onChange(null);
             }}
-            className={`inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-semibold ${
-              mode === "DRAWN" ? "bg-cobalt text-white" : "border border-paper-line text-ink-soft"
+            className={`relative z-10 inline-flex h-8 items-center gap-1.5 rounded-md px-3 text-xs font-semibold transition-colors duration-200 ${
+              mode === "DRAWN" ? "text-ink" : "text-ink-mute hover:text-ink-soft"
             }`}
           >
             <PenLine className="h-3.5 w-3.5" /> Desenhar
@@ -120,38 +125,53 @@ export function SignaturePad({
             className="field"
           />
           {typed.trim() && (
-            <p
-              className="mt-4 rounded-lg border border-dashed border-paper-line bg-paper px-4 py-6 text-center text-2xl"
-              style={{ fontFamily: "cursive" }}
-            >
-              {typed}
-            </p>
+            <div className="ss-pop mt-4 rounded-lg border border-dashed border-paper-line bg-paper px-4 py-6 text-center">
+              <p
+                className="text-3xl leading-tight text-ink transition-all duration-300"
+                style={{ fontFamily: "cursive" }}
+              >
+                {typed}
+              </p>
+              <p className="mt-2 text-[11px] uppercase tracking-wide text-ink-mute">Sua assinatura</p>
+            </div>
           )}
         </>
       ) : (
         <>
-          <canvas
-            ref={canvasRef}
-            width={800}
-            height={260}
-            onPointerDown={start}
-            onPointerMove={move}
-            onPointerUp={stop}
-            onPointerLeave={stop}
-            className="w-full touch-none rounded-lg border border-dashed border-paper-line bg-white"
-            style={{ cursor: "crosshair" }}
-          />
+          <div className="relative">
+            <canvas
+              ref={canvasRef}
+              width={800}
+              height={260}
+              onPointerDown={start}
+              onPointerMove={move}
+              onPointerUp={stop}
+              onPointerLeave={stop}
+              className="ss-pop w-full touch-none rounded-lg border border-dashed border-paper-line bg-white"
+              style={{ cursor: "crosshair" }}
+            />
+            {!hasInk && (
+              <p className="pointer-events-none absolute inset-0 flex items-center justify-center text-sm text-ink-mute/70">
+                Assine aqui com o mouse ou o dedo
+              </p>
+            )}
+          </div>
           <div className="mt-2 flex items-center justify-between">
-            <p className="text-xs text-ink-mute">Assine com o mouse ou o dedo</p>
+            <p className="text-xs text-ink-mute">
+              {hasInk ? (
+                <span className="font-semibold text-ok">Assinatura desenhada capturada.</span>
+              ) : (
+                "Assine com o mouse ou o dedo"
+              )}
+            </p>
             <button
               type="button"
               onClick={clear}
-              className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-paper-line px-2.5 text-xs font-semibold text-ink-soft"
+              className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-paper-line px-2.5 text-xs font-semibold text-ink-soft transition-colors hover:bg-paper"
             >
               <Eraser className="h-3.5 w-3.5" /> Limpar
             </button>
           </div>
-          {hasInk && <p className="mt-1 text-xs text-ok">Assinatura desenhada capturada.</p>}
         </>
       )}
     </div>
