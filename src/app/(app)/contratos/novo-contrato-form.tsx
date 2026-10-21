@@ -1,17 +1,33 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { FolderPlus, Loader2, Mail, Sparkles } from "lucide-react";
-import { createAndSendContractAction } from "./actions";
 import { SendSuccess } from "./send-success";
 import {
   type ClientOption,
   type CompanyOption,
-  type ContractFormState,
   type TemplateOption,
   type VaultOption,
 } from "./shared";
+
+/** Rótulos amigáveis usados nas mensagens de erro. */
+const FIELD_LABELS: Record<string, string> = {
+  clientName: "Nome do cliente",
+  clientEmail: "E-mail do cliente",
+  clientDocument: "CPF/CNPJ do cliente",
+  clientAddress: "Endereço do cliente",
+  title: "Título do contrato",
+  templateId: "Modelo de contrato",
+  value: "Valor",
+  startDate: "Data de início",
+  endDate: "Data de término",
+  expiresInDays: "Prazo do link",
+  signerName: "Nome de quem recebe o documento",
+  signerEmail: "E-mail de quem recebe o documento",
+  vaultId: "Cofre",
+  newVaultName: "Nome do cofre",
+};
 
 /**
  * Criação de contrato em UMA tela só:
@@ -34,10 +50,16 @@ export function NovoContratoForm({
   defaultTemplateId?: string;
   defaultClient?: ClientOption | null;
 }) {
-  const [state, formAction, pending] = useActionState<ContractFormState, FormData>(
-    createAndSendContractAction,
-    {}
-  );
+  const [state, setState] = useState<{
+    error?: string;
+    fieldErrors?: Record<string, string>;
+    success?: boolean;
+    link?: string;
+    emailed?: number;
+    contractNumber?: string;
+    signerEmail?: string;
+  }>({});
+  const [pending, setPending] = useState(false);
 
   const [clientName, setClientName] = useState(defaultClient?.name ?? "");
   const [clientEmail, setClientEmail] = useState(defaultClient?.email ?? "");
@@ -73,6 +95,31 @@ export function NovoContratoForm({
     if (t) setTitle((prev) => prev || t.name);
   }
 
+  /** Envia os dados para a API, que cria o contrato e dispara o e-mail. */
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setPending(true);
+    setState({});
+    try {
+      const fd = new FormData(e.currentTarget);
+      const payload = Object.fromEntries(fd.entries()) as Record<string, string>;
+      const res = await fetch("/api/contratos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      setState(data);
+      if (!res.ok) {
+        setState({ error: data.error, fieldErrors: data.fieldErrors });
+      }
+    } catch {
+      setState({ error: "Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente." });
+    } finally {
+      setPending(false);
+    }
+  }
+
   if (state.success && state.link) {
     return (
       <SendSuccess
@@ -87,10 +134,10 @@ export function NovoContratoForm({
   }
 
   return (
-    <form action={formAction} noValidate className="space-y-5">
+    <form onSubmit={handleSubmit} noValidate className="space-y-5">
       {/* ------------------------------ CLIENTE ------------------------------ */}
       <section className="rounded-xl border border-paper-line bg-white p-5">
-        <h2 className="text-base font-bold">Quem vai assinar</h2>
+        <h2 className="text-base font-bold">Quem vai receber o documento</h2>
         <p className="mt-1 text-sm text-ink-mute">
           O cliente recebe o link por e-mail. Não precisa ter conta aqui.
         </p>
