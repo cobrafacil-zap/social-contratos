@@ -25,11 +25,69 @@ const schema = z.object({
   startDate: z.string().trim().optional().or(z.literal("")),
   endDate: z.string().trim().optional().or(z.literal("")),
   expiresInDays: z.string().trim().optional().or(z.literal("")),
-  signerName: z.string().trim().min(2, "Informe o nome de quem assina").max(120, "Nome muito longo"),
+  signerName: z.string().trim().min(2, "Informe o nome de quem recebe o documento").max(120, "Nome muito longo"),
   signerEmail: z.string().trim().toLowerCase().email("Informe um e-mail válido").max(254, "E-mail muito longo"),
   vaultId: z.string().trim().optional().or(z.literal("")),
   newVaultName: z.string().trim().max(120, "Nome do cofre muito longo").optional().or(z.literal("")),
+}).superRefine((data, ctx) => {
+  // Valor: aceita vírgula (500,00) e ponto (500.00).
+  if (data.value) {
+    const n = Number(data.value);
+    if (!Number.isFinite(n) || n < 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["value"],
+        message: "Informe um valor numérico (ex.: 500,00)",
+      });
+    }
+  }
+  // Prazo: inteiro positivo.
+  if (data.expiresInDays) {
+    const n = Number(data.expiresInDays);
+    if (!Number.isInteger(n) || n < 1 || n > 365) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["expiresInDays"],
+        message: "Informe um número de dias entre 1 e 365",
+      });
+    }
+  }
+  // Data de término não pode ser antes do início.
+  if (data.startDate && data.endDate && data.endDate < data.startDate) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["endDate"],
+      message: "A data de término não pode ser antes do início",
+    });
+  }
 });
+
+/** Converte "1.500,00" ou "500,00" para "1500.00" (aceita vírgula do teclado BR). */
+function normalizeNumber(raw: string | undefined): string {
+  if (!raw) return "";
+  return raw
+    .replace(/[^\d.,-]/g, "")
+    .replace(/\.(?=\d{3}\b)/g, "")
+    .replace(",", ".");
+}
+
+/** Rótulos amigáveis dos campos, usados nas mensagens de erro. */
+const FIELD_LABELS: Record<string, string> = {
+  clientName: "Nome do cliente",
+  clientEmail: "E-mail do cliente",
+  clientDocument: "CPF/CNPJ do cliente",
+  clientAddress: "Endereço do cliente",
+  title: "Título do contrato",
+  templateId: "Modelo de contrato",
+  value: "Valor",
+  startDate: "Data de início",
+  endDate: "Data de término",
+  expiresInDays: "Prazo do link",
+  signerName: "Nome de quem recebe o documento",
+  signerEmail: "E-mail de quem recebe o documento",
+  vaultId: "Cofre",
+  newVaultName: "Nome do cofre",
+};
 
 function toDate(value: string | undefined): Date | null {
   if (!value) return null;
@@ -58,7 +116,7 @@ export async function createAndSendContractAction(
     clientAddress: formData.get("clientAddress"),
     title: formData.get("title"),
     templateId: formData.get("templateId"),
-    value: formData.get("value"),
+    value: normalizeNumber(String(formData.get("value") ?? "")),
     startDate: formData.get("startDate"),
     endDate: formData.get("endDate"),
     expiresInDays: formData.get("expiresInDays"),
@@ -69,11 +127,21 @@ export async function createAndSendContractAction(
   });
 
   if (!parsed.success) {
-    return { error: "Revise os campos destacados.", fieldErrors: fieldErrorsFrom(parsed.error) };
+    const fieldErrors = fieldErrorsFrom(parsed.error);
+    // Lista os campos com problema para o usuário saber exatamente o que corrigir.
+    const problems = Object.entries(fieldErrors).map(
+      ([key, msg]) => `${FIELD_LABELS[key] ?? key}: ${msg}`
+    );
+    return {
+      error:
+        problems.length > 0
+          ? `Revise ${problems.length === 1 ? "este campo" : "estes campos"}: ${problems.join(" · ")}`
+          : "Revise os campos destacados.",
+      fieldErrors,
+    };
   }
   const data = parsed.data;
 
-  console.error("[ACTION] apos validacao");
   const company = await db.company.findUnique({
     where: { id: companyId },
     select: {
@@ -232,7 +300,6 @@ export async function createAndSendContractAction(
   });
 
   /* ------------------------------- Contrato ------------------------------- */
-  console.error("[ACTION] antes do contract.create");
   const contract = await db.contract.create({
     data: {
       companyId,
