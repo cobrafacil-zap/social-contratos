@@ -35,13 +35,6 @@ export const authConfig = {
       return token;
     },
     session({ session, token }) {
-      // Sessão curta (sem "manter conectado") expira em 8 h.
-      // O Auth.js permite devolver `null` aqui para invalidar a sessão,
-      // embora o tipo não reflita isso.
-      if (!token.remember && Number(token.shortLivedAt) > 0) {
-        const age = Math.floor(Date.now() / 1000) - Number(token.shortLivedAt);
-        if (age > SESSION_MAX_AGE) return null as unknown as typeof session;
-      }
       session.user.id = token.uid as string;
       session.user.role = token.role as string;
       session.user.companyId = token.companyId as string;
