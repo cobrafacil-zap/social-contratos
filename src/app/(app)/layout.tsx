@@ -7,6 +7,7 @@ import { MobileNav } from "@/components/mobile-nav";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
+  console.error("[LAYOUT] session.user:", JSON.stringify(session?.user ?? null));
   if (!session?.user) redirect("/login");
 
   // Revalida no banco: usuário desativado perde acesso imediatamente.
@@ -14,7 +15,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     where: { id: session.user.id },
     select: { name: true, email: true, isActive: true, deletedAt: true },
   });
+  console.error("[LAYOUT] user do banco:", JSON.stringify(user ?? null));
   if (!user || !user.isActive || user.deletedAt) {
+    console.error("[LAYOUT] signOut disparado");
     await signOut({ redirectTo: "/login" });
     return null;
   }
