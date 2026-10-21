@@ -7,20 +7,27 @@ import { MobileNav } from "@/components/mobile-nav";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
-  console.error("[LAYOUT] session.user:", JSON.stringify(session?.user ?? null));
   if (!session?.user) redirect("/login");
 
   // Revalida no banco: usuário desativado perde acesso imediatamente.
-  const user = await db.user.findUnique({
-    where: { id: session.user.id },
-    select: { name: true, email: true, isActive: true, deletedAt: true },
-  });
-  console.error("[LAYOUT] user do banco:", JSON.stringify(user ?? null));
-  if (!user || !user.isActive || user.deletedAt) {
-    console.error("[LAYOUT] signOut disparado");
+  // Falha de banco não pode derrubar a página — confiamos na sessão nesse caso.
+  let user: { name: string; email: string; isActive: boolean; deletedAt: Date | null } | null = null;
+  try {
+    user = await db.user.findUnique({
+      where: { id: session.user.id },
+      select: { name: true, email: true, isActive: true, deletedAt: true },
+    });
+  } catch (e) {
+    console.error("[LAYOUT] falha ao revalidar usuário no banco:", e);
+  }
+
+  if (user && (!user.isActive || user.deletedAt)) {
     await signOut({ redirectTo: "/login" });
     return null;
   }
+
+  const displayName = user?.name ?? session.user.name ?? "";
+  const displayEmail = user?.email ?? session.user.email ?? "";
 
   return (
     <div className="min-h-dvh lg:grid lg:grid-cols-[264px_1fr]">
@@ -30,8 +37,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           <MobileNav />
           <div className="ml-auto flex items-center gap-4">
             <div className="hidden text-right sm:block">
-              <p className="text-sm font-semibold leading-tight">{user.name}</p>
-              <p className="text-xs text-ink-mute">{user.email}</p>
+              <p className="text-sm font-semibold leading-tight">{displayName}</p>
+              <p className="text-xs text-ink-mute">{displayEmail}</p>
             </div>
             <form action={async () => { "use server"; await signOut({ redirectTo: "/login" }); }}>
               <button type="submit" className="inline-flex h-10 items-center gap-2 rounded-lg border border-paper-line px-3 text-sm font-semibold text-ink-soft hover:bg-paper">
