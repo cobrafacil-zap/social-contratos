@@ -3,7 +3,7 @@
 import { useActionState, useMemo, useState } from "react";
 import Link from "next/link";
 import { FolderPlus, Loader2, Mail, Sparkles } from "lucide-react";
-import { createAndSendContractAction } from "./create-action";
+import { createAndSendContractAction } from "./actions";
 import { SendSuccess } from "./send-success";
 import {
   type ClientOption,
