@@ -73,6 +73,7 @@ export async function createAndSendContractAction(
   }
   const data = parsed.data;
 
+  console.error("[ACTION] apos validacao");
   const company = await db.company.findUnique({
     where: { id: companyId },
     select: {
@@ -231,6 +232,7 @@ export async function createAndSendContractAction(
   });
 
   /* ------------------------------- Contrato ------------------------------- */
+  console.error("[ACTION] antes do contract.create");
   const contract = await db.contract.create({
     data: {
       companyId,
