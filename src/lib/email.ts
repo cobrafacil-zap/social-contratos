@@ -62,7 +62,7 @@ export async function sendEmail({
         html,
         text: text ?? undefined,
         headers: headers ?? undefined,
-        reply_to: replyTo ?? undefined,
+        reply_to: (replyTo ?? process.env.EMAIL_REPLY_TO) || undefined,
       }),
     });
 
@@ -177,7 +177,6 @@ ${companyName} via Social Sign`;
     "List-Unsubscribe": `<${appUrl}/api/unsubscribe?email=${encodeURIComponent(signerEmail)}>, <mailto:contatocomercialsocial@gmail.com?subject=Remover%20inscricao>`,
     "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
     "X-Entity-Ref-ID": `sm-contrato-${contractNumber}`,
-    "Reply-To": process.env.EMAIL_REPLY_TO || "contatocomercialsocial@gmail.com",
   };
 
   return { subject: `Assinatura pendente: ${contractTitle} (${contractNumber})`, html, text, headers };
