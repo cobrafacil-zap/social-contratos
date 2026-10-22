@@ -263,6 +263,7 @@ async function main() {
     contractTitle: "Termo de Compromisso e Confidencialidade — Assessoria em Marketing Digital",
     contractNumber: number,
     signerName: variables.cliente_razao_social,
+    signerEmail: "contatocomercialsocial@gmail.com",
     role: "Contratante",
     signUrl: url,
     expiresAt,

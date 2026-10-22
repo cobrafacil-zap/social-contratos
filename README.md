@@ -16,11 +16,13 @@ cp .env.example .env     # preencha as variáveis
 1. Crie o projeto em supabase.com.
 2. Em *Project Settings → Database → Connection string* copie a string do **Session pooler** (porta 5432) e use o usuário no formato `postgres.<project-ref>`:
 ```
-DATABASE_URL="postgresql://postgres.<project-ref>:SENHA@aws-0-REGIAO.pooler.supabase.com:5432/postgres?connection_limit=1"
-DIRECT_URL="postgresql://postgres.<project-ref>:SENHA@aws-0-REGIAO.pooler.supabase.com:5432/postgres?connection_limit=1"
+DATABASE_URL="postgresql://postgres.<project-ref>:SENHA@aws-0-REGIAO.pooler.supabase.com:5432/postgres?connection_limit=1&pgbouncer=true&pool_timeout=60"
+DIRECT_URL="postgresql://postgres.<project-ref>:SENHA@aws-0-REGIAO.pooler.supabase.com:5432/postgres?connection_limit=1&pgbouncer=true&pool_timeout=60"
 ```
    > **Atenção:** o host direto (`db.<ref>.supabase.co`) é IPv6-only e **não funciona na Vercel**. O Transaction pooler (porta 6543) é incompatível com o Prisma em ambiente serverless. Use sempre o Session pooler na porta 5432 com o tenant no usuário.
    > O `?connection_limit=1` é obrigatório no plano free: o pooler aceita ~15 conexões no total e a Vercel escala em várias instâncias. Sem esse limite o erro é `max clients reached in session mode`.
+   > `pgbouncer=true` desliga prepared statements (exigido pelo pooler) e `pool_timeout=60` dá 60s de espera por uma conexão livre.
+   > O erro `Timed out fetching a new connection from the connection pool` aparece quando várias queries rodam em paralelo (`Promise.all`) e cada uma segura uma conexão. A correção é **não** aumentar o limite, mas reduzir o paralelismo: a criação de contrato roda numa API route (`src/app/api/contratos/route.ts`) que faz as queries em sequência.
    > O plano free pausa o banco após 1 semana sem uso — restaure pelo painel do Supabase quando isso acontecer (o sintoma é `Can't reach database server`).
 3. Gere o `AUTH_SECRET`: `openssl rand -base64 32`. Gere também `TOKEN_PEPPER` e `CRON_SECRET`: `openssl rand -hex 32`.
 4. Crie as tabelas e aplique as proteções:
@@ -51,15 +53,33 @@ Preencha `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`. A service role key só é
    vercel dns addseudominio.com resend._domainkey TXT "<chave>"
    vercel dns addseudominio.com send MX "feedback-smtp.us-east-1.amazonses.com" 10
    vercel dns addseudominio.com send TXT "v=spf1 include:amazonses.com ~all"
-   vercel dns addseudominio.com rsend CNAME "send.forge.rmta.net"
+   vercel dns add pseudominio.com rsend CNAME "send.forge.rmta.net"
+   ```
+   Além do SPF do subdomínio `send`, publique o **SPF na raiz** — sem ele, quem confere o SPF
+   do domínio do remetente (`seudominio.com`) não encontra registro:
+   ```bash
+   vercel dns add pseudominio.com @ TXT "v=spf1 include:amazonses.com ~all"
+   ```
+   E publique a política DMARC (comece em `p=none` para observar os relatórios):
+   ```
+   TXT  _dmarc   v=DMARC1; p=none; rua=mailto:contatocomercialsocial@gmail.com; fo=1; adkim=s; aspf=s; pct=100
    ```
 2. Copie a **API key** (*API Keys → Create API Key*).
 3. Preencha no `.env` **e** nas variáveis de ambiente do Vercel:
 ```
 RESEND_API_KEY="re_xxxxxxxxxxxxx"
 EMAIL_FROM="Social Sign <contratos@seudominio.com>"
+EMAIL_REPLY_TO="contato@seudominio.com"
 ```
-4. Sem essas variáveis o app **continua funcionando**: o link de assinatura aparece na tela para você enviar
+4. Para o Gmail entregar na **caixa de entrada** (e não em Spam), o e-mail já sai com:
+   - versão em texto puro junto do HTML;
+   - `List-Unsubscribe` (HTTPS em `/api/unsubscribe` + `mailto`) com `List-Unsubscribe-Post: One-Click` — exigido pelo Gmail;
+   - `Reply-To` apontando para uma caixa real;
+   - `X-Entity-Ref-ID` único por contrato.
+   Mesmo assim, domínio novo e pouco volume caem no spam com frequência: peça para o
+   destinatário marcar "Não é spam" / adicionar o remetente aos contatos e, no Gmail,
+   criar um filtro que nunca arquive os e-mails de `contratos@seudominio.com`.
+5. Sem essas variáveis o app **continua funcionando**: o link de assinatura aparece na tela para você enviar
    manualmente (por WhatsApp, e-mail ou outro canal). A página *Configurações → Integrações* mostra o status.
 
 ## 5. Rodar localmente

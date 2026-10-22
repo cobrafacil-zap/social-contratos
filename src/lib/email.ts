@@ -34,12 +34,14 @@ export async function sendEmail({
   html,
   text,
   headers,
+  replyTo,
 }: {
   to: string;
   subject: string;
   html: string;
   text?: string;
   headers?: Record<string, string>;
+  replyTo?: string;
 }): Promise<EmailResult> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -60,6 +62,7 @@ export async function sendEmail({
         html,
         text: text ?? undefined,
         headers: headers ?? undefined,
+        reply_to: replyTo ?? undefined,
       }),
     });
 
@@ -79,6 +82,7 @@ export function signatureRequestEmail({
   contractTitle,
   contractNumber,
   signerName,
+  signerEmail,
   role,
   signUrl,
   expiresAt,
@@ -87,6 +91,7 @@ export function signatureRequestEmail({
   contractTitle: string;
   contractNumber: string;
   signerName: string;
+  signerEmail: string;
   role: string;
   signUrl: string;
   expiresAt: Date;
@@ -163,11 +168,16 @@ Se você não esperava esta solicitação, ignore este e-mail.
 ${companyName} via Social Sign`;
 
   // Headers que ajudam o Gmail (e o Outlook) a entregar na caixa de entrada:
-  // identificam o remetente legítimo e oferecem descadastro em um clique.
+  // identificam o remetente legítimo e oferecem descadastro em um clique (RFC 8058).
+  // O Gmail exige o par `List-Unsubscribe` + `List-Unsubscribe-Post: One-Click`
+  // com uma URL HTTPS para considerar o remetente "confiável" e não arquivar
+  // automaticamente as mensagens em Promoções/Spam.
+  const appUrl = (process.env.APP_URL || "https://social-contratos.vercel.app").replace(/\/$/, "");
   const headers: Record<string, string> = {
-    "List-Unsubscribe": `<mailto:contatocomercialsocial@gmail.com?subject=Remover%20inscricao>`,
+    "List-Unsubscribe": `<${appUrl}/api/unsubscribe?email=${encodeURIComponent(signerEmail)}>, <mailto:contatocomercialsocial@gmail.com?subject=Remover%20inscricao>`,
     "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
     "X-Entity-Ref-ID": `sm-contrato-${contractNumber}`,
+    "Reply-To": process.env.EMAIL_REPLY_TO || "contatocomercialsocial@gmail.com",
   };
 
   return { subject: `Assinatura pendente: ${contractTitle} (${contractNumber})`, html, text, headers };

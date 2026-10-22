@@ -6,3 +6,7 @@ node_modules
 next-env.d.ts
 .vercel
 .env*
+
+# vídeos de trabalho (não versionados)
+video/
+public/sm-company-reels.mp4

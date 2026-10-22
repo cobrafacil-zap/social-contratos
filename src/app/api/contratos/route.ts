@@ -360,6 +360,7 @@ export async function POST(req: Request) {
         contractTitle: data.title,
         contractNumber: number,
         signerName: data.signerName,
+        signerEmail: data.signerEmail,
         role: "Contratante",
         signUrl: link,
         expiresAt,
@@ -369,6 +370,7 @@ export async function POST(req: Request) {
         subject: mail.subject,
         html: mail.html,
         text: mail.text,
+        headers: mail.headers,
       });
       if (sent.ok) emailed = 1;
       else emailError = `Não foi possível enviar o e-mail: ${sent.error}`;

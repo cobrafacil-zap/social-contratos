@@ -135,6 +135,7 @@ async function main() {
     contractTitle: "Contrato de Prestação de Serviços",
     contractNumber: number,
     signerName: client.name,
+    signerEmail: client.email,
     role: "Contratante",
     signUrl: url,
     expiresAt,

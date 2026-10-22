@@ -175,11 +175,18 @@ export async function sendForSignatureAction(
         contractTitle: contract.title,
         contractNumber: contract.number,
         signerName: signer.name,
+        signerEmail: signer.email,
         role: signer.role,
         signUrl: url,
         expiresAt: tokenExpiresAt,
       });
-      const result = await sendEmail({ to: signer.email, subject: mail.subject, html: mail.html, text: mail.text });
+      const result = await sendEmail({
+        to: signer.email,
+        subject: mail.subject,
+        html: mail.html,
+        text: mail.text,
+        headers: mail.headers,
+      });
       if (result.ok) emailed += 1;
       else emailErrors.push(`${signer.email}: ${result.error ?? "falha desconhecida"}`);
     }
