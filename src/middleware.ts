@@ -21,6 +21,11 @@ export default auth((req) => {
   const path = req.nextUrl.pathname;
   const isPublic = PUBLIC.some((p) => path === p || path.startsWith(p));
   if (!req.auth && !isPublic) {
+    // API: responde 401 em JSON. Um redirect (307) faria o fetch seguir para
+    // /login e receber HTML, quebrando o `res.json()` do front.
+    if (path.startsWith("/api/")) {
+      return NextResponse.json({ error: "Sessão expirada. Entre novamente para continuar." }, { status: 401 });
+    }
     const url = new URL("/login", req.nextUrl.origin);
     url.searchParams.set("next", path);
     return NextResponse.redirect(url);

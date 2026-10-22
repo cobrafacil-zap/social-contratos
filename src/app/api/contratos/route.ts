@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/server/db";
 import { rateLimit } from "@/server/security/rate-limit";
-import { requireUser } from "@/server/session";
+import { getUser } from "@/server/session";
 import { buildContractHtml } from "../../(app)/contratos/html";
 import { buildVariables } from "@/lib/variables";
 import { createSignerFields } from "@/lib/signature-fields";
@@ -118,7 +118,12 @@ export async function POST(req: Request) {
   }
   const data = parsed.data;
 
-  const session = await requireUser();
+  // `getUser` (e não `requireUser`) para responder 401 em JSON quando a sessão
+  // expirar — um redirect para /login quebraria o `res.json()` do front.
+  const session = await getUser();
+  if (!session) {
+    return NextResponse.json({ error: "Sessão expirada. Entre novamente para continuar." }, { status: 401 });
+  }
   const { companyId, userId } = session;
 
   if (!rateLimit(`contract:create:${userId}`, 30, 60_000)) {

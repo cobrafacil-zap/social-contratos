@@ -110,7 +110,9 @@ export function NovoContratoForm({
       });
       const data = await res.json();
       setState(data);
-      if (!res.ok) {
+      if (res.status === 401) {
+        setState({ error: "Sua sessão expirou. Entre novamente e crie o contrato outra vez." });
+      } else if (!res.ok) {
         setState({ error: data.error, fieldErrors: data.fieldErrors });
       }
     } catch {
