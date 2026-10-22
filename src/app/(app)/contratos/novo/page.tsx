@@ -11,6 +11,20 @@ import type { ClientOption, CompanyOption, TemplateOption, VaultOption } from ".
 export const metadata: Metadata = { title: "Novo contrato" };
 export const dynamic = "force-dynamic";
 
+/** Converte o HTML do modelo em texto curto, para o usuário conferir o que escolheu. */
+function previewOf(html: string): string {
+  const text = html
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\{\{[^}]+\}\}/g, "___")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&middot;/g, "·")
+    .replace(/&[a-z]+;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return text.length > 260 ? `${text.slice(0, 260)}…` : text;
+}
+
 export default async function NewContractPage({
   searchParams,
 }: {
@@ -64,6 +78,7 @@ export default async function NewContractPage({
     id: t.id,
     name: t.name,
     category: t.category,
+    preview: previewOf(getTemplateHtml(t.content)),
     variables: extractVariables(getTemplateHtml(t.content)).map((key) => ({
       key,
       label: humanizeVar(key),

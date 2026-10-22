@@ -26,6 +26,8 @@ export type TemplateOption = {
   id: string;
   name: string;
   category: string | null;
+  /** Trecho inicial do documento, já sem HTML, para conferência rápida. */
+  preview: string;
   /** Variáveis detectadas no modelo, já com rótulo amigável. */
   variables: { key: string; label: string }[];
 };

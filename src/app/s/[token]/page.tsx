@@ -5,7 +5,8 @@ import { db } from "@/server/db";
 import { hashToken } from "@/lib/contract";
 import { formatDate, formatDateTime } from "@/lib/format";
 import { SignForm } from "./sign-form";
-import { ScrollReveal, SignProgress } from "./sign-animations";
+import { ScrollReveal } from "./sign-animations";
+import { SignFlow, ReadTracker, ContinueButton } from "./sign-flow";
 
 export const metadata: Metadata = { title: "Assinar documento", robots: { index: false } };
 export const dynamic = "force-dynamic";
@@ -95,8 +96,7 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
       </header>
 
       {/* --------------------------- BARRA DE PROGRESSO --------------------------- */}
-      <SignProgress step={bloqueado ? 3 : 1} />
-
+      <SignFlow startAt={bloqueado ? 3 : 0}>
       <div className="mx-auto max-w-3xl px-4 py-8">
         {revoked && (
           <div className="rounded-xl border border-bad/30 bg-bad-tint p-6 text-center">
@@ -137,12 +137,14 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
                   className="prose-sm max-w-none leading-relaxed text-ink"
                   dangerouslySetInnerHTML={{ __html: signer.version.renderedHtml }}
                 />
+                <ReadTracker />
+                <ContinueButton />
               </section>
             </ScrollReveal>
 
             {/* ------------------------------ FORMULÁRIO ------------------------------ */}
             <ScrollReveal delay={120} className="mt-6">
-              <section className="rounded-xl border border-paper-line bg-white p-5 sm:p-6">
+              <section id="assinatura" className="scroll-mt-24 rounded-xl border border-paper-line bg-white p-5 sm:p-6">
                 <h2 className="mb-4 text-base font-bold">Preencha e assine</h2>
                 <SignForm token={token} fields={fields} signerName={signer.name} />
               </section>
@@ -156,6 +158,7 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
           </>
         )}
       </div>
+      </SignFlow>
     </main>
   );
 }

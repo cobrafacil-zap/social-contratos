@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Check, Copy, Mail, PartyPopper } from "lucide-react";
+import { Check, Copy, FileText, Mail, PartyPopper } from "lucide-react";
 
 /**
  * Tela de sucesso após o envio do e-mail de assinatura.
@@ -14,6 +14,7 @@ export function SendSuccess({
   email,
   contractNumber,
   contractTitle,
+  templateName,
   error,
 }: {
   link: string;
@@ -21,6 +22,7 @@ export function SendSuccess({
   email: string;
   contractNumber?: string;
   contractTitle?: string;
+  templateName?: string | null;
   error?: string;
 }) {
   const [copied, setCopied] = useState(false);
@@ -100,6 +102,14 @@ export function SendSuccess({
       {contractNumber && (
         <p className="ss-pop relative mt-3 text-sm text-ink-mute" style={{ animationDelay: "300ms" }}>
           {contractTitle} · <span className="font-mono font-semibold text-ink-soft">{contractNumber}</span>
+          {templateName ? (
+            <>
+              {" · "}
+              <span className="inline-flex items-center gap-1 rounded-full bg-cobalt/10 px-2 py-0.5 text-[11px] font-semibold text-cobalt">
+                <FileText className="h-3 w-3" aria-hidden /> {templateName}
+              </span>
+            </>
+          ) : null}
         </p>
       )}
 

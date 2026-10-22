@@ -1,10 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useActionState } from "react";
 import { Loader2, PenLine, ShieldCheck } from "lucide-react";
 import { signContractAction, refuseContractAction, type SignState } from "./actions";
 import { SignaturePad, type SignatureValue } from "./signature-pad";
 import { SuccessAnimation } from "./sign-animations";
+import { useSignProgress } from "./sign-flow";
 import { FIELD_TYPE } from "@/lib/status";
 
 type Field = {
@@ -27,6 +28,21 @@ export function SignForm({ token, fields, signerName }: { token: string; fields:
   const [signatures, setSignatures] = useState<Record<string, SignatureValue | null>>({});
   const [terms, setTerms] = useState(false);
   const [showRefuse, setShowRefuse] = useState(false);
+
+  // A barra do topo avança conforme os dados obrigatórios vão sendo preenchidos.
+  const { reach } = useSignProgress();
+  const preenchido = fields.every((f) => {
+    if (!f.required) return true;
+    if (f.type === "SIGNATURE") return !!signatures[f.id];
+    if (f.type === "CHECKBOX") return values[f.id] === "true";
+    return !!values[f.id]?.trim();
+  });
+  useEffect(() => {
+    if (preenchido) reach(2);
+  }, [preenchido, reach]);
+  useEffect(() => {
+    if (state.success) reach(3);
+  }, [state.success, reach]);
 
   if (state.success) {
     return (

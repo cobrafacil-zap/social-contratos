@@ -47,52 +47,6 @@ export function ScrollReveal({
 }
 
 /* -------------------------------------------------------------------------- */
-/* Barra de progresso dos passos (fixa no topo)                                */
-/* -------------------------------------------------------------------------- */
-
-export function SignProgress({ step }: { step: number }) {
-  const steps = ["Ler o documento", "Preencher seus dados", "Assinar"];
-  const pct = [33, 66, 100][Math.max(0, Math.min(2, step - 1))];
-
-  return (
-    <div className="sticky top-0 z-30 border-b border-paper-line bg-white/85 backdrop-blur">
-      <div className="mx-auto max-w-3xl px-4 py-3">
-        <div className="relative h-1.5 overflow-hidden rounded-full bg-paper-line">
-          <div
-            className="h-full rounded-full bg-cobalt transition-[width] duration-700 ease-out"
-            style={{ width: `${pct}%` }}
-          />
-          <span className="ss-shimmer pointer-events-none absolute inset-0 overflow-hidden rounded-full" />
-        </div>
-        <ol className="mt-2.5 flex items-center justify-between gap-2 text-[11px] font-semibold">
-          {steps.map((label, i) => {
-            const active = step > i;
-            return (
-              <li
-                key={label}
-                className={`flex items-center gap-1.5 transition-colors duration-500 ${
-                  active ? "text-cobalt" : "text-ink-mute/60"
-                }`}
-              >
-                <span
-                  className={`flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full text-[10px] transition-all duration-500 ${
-                    active ? "bg-cobalt text-white" : "bg-paper-line text-ink-mute/70"
-                  }`}
-                  style={{ height: 18, width: 18 }}
-                >
-                  {active ? "✓" : i + 1}
-                </span>
-                <span className="hidden sm:inline">{label}</span>
-              </li>
-            );
-          })}
-        </ol>
-      </div>
-    </div>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
 /* Tela de sucesso com check desenhado + confete                              */
 /* -------------------------------------------------------------------------- */
 

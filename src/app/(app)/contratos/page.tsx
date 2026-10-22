@@ -52,7 +52,10 @@ export default async function ContractsPage({
     db.contract.findMany({
       where,
       orderBy: { createdAt: "desc" },
-      include: { client: { select: { id: true, name: true } } },
+      include: {
+        client: { select: { id: true, name: true } },
+        template: { select: { name: true } },
+      },
     }),
     db.client.findMany({
       where: { companyId, deletedAt: null },
@@ -67,7 +70,7 @@ export default async function ContractsPage({
     <div className="mx-auto max-w-6xl">
       <PageHeader
         title="Contratos"
-        description="Gerencie os contratos da sua empresa: rascunhos, envios e assinaturas."
+        description="Crie um contrato novo e acompanhe o que já foi enviado."
         action={
           <Link href="/contratos/novo" className="btn">
             <Plus className="h-4 w-4" aria-hidden /> Novo contrato
@@ -75,7 +78,22 @@ export default async function ContractsPage({
         }
       />
 
-      <dl className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+      {/* ---------------- Criar novo contrato (ação principal da página) ---------------- */}
+      <Link
+        href="/contratos/novo"
+        className="group mt-2 flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-cobalt/35 bg-cobalt/[0.05] px-6 py-10 text-center transition-all duration-200 hover:border-cobalt hover:bg-cobalt/[0.1] hover:shadow-lg hover:shadow-cobalt/10"
+      >
+        <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cobalt text-white shadow-lg shadow-cobalt/25 transition-transform duration-200 group-hover:scale-110">
+          <Plus className="h-7 w-7" aria-hidden />
+        </span>
+        <span className="text-lg font-extrabold tracking-tight text-ink">Criar novo contrato</span>
+        <span className="max-w-md text-sm text-ink-soft">
+          Uma tela só: preencha os dados do cliente, escolha o modelo e o link de assinatura
+          chega por e-mail automaticamente.
+        </span>
+      </Link>
+
+      <dl className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
         <Stat label="Total" value={total} />
         <Stat label="Rascunhos" value={drafts} />
         <Stat label="Aguardando assinatura" value={awaiting} />
@@ -181,6 +199,7 @@ export default async function ContractsPage({
                 <th className="px-5 py-3 font-semibold">Número</th>
                 <th className="px-5 py-3 font-semibold">Título</th>
                 <th className="px-5 py-3 font-semibold">Cliente</th>
+                <th className="px-5 py-3 font-semibold">Modelo</th>
                 <th className="px-5 py-3 font-semibold">Status</th>
                 <th className="px-5 py-3 text-right font-semibold">Valor</th>
                 <th className="px-5 py-3 font-semibold">Criado em</th>
@@ -202,6 +221,15 @@ export default async function ContractsPage({
                   </td>
                   <td className="max-w-[200px] truncate px-5 py-3.5 text-ink-soft">
                     {c.client.name}
+                  </td>
+                  <td className="max-w-[180px] truncate px-5 py-3.5">
+                    {c.template?.name ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-cobalt/10 px-2 py-0.5 text-[11px] font-semibold text-cobalt">
+                        {c.template.name}
+                      </span>
+                    ) : (
+                      <span className="text-[11px] text-ink-mute">sem modelo</span>
+                    )}
                   </td>
                   <td className="px-5 py-3.5">
                     <StatusBadge status={c.status} kind="contract" />

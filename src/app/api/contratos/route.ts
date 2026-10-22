@@ -217,7 +217,7 @@ export async function POST(req: Request) {
     const template = data.templateId
       ? await db.contractTemplate.findFirst({
           where: { id: data.templateId, companyId, deletedAt: null },
-          select: { id: true, content: true, headerHtml: true, footerHtml: true },
+          select: { id: true, name: true, content: true, headerHtml: true, footerHtml: true },
         })
       : null;
     if (data.templateId && !template) {
@@ -388,6 +388,7 @@ export async function POST(req: Request) {
       link,
       emailed,
       contractNumber: number,
+      templateName: template?.name ?? null,
       signerEmail: data.signerEmail,
       error: emailError,
     });

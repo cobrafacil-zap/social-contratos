@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { FolderPlus, Loader2, Mail, Sparkles } from "lucide-react";
+import { FileText, FolderPlus, Loader2, Mail, Sparkles } from "lucide-react";
 import { SendSuccess } from "./send-success";
 import {
   type ClientOption,
@@ -57,6 +57,7 @@ export function NovoContratoForm({
     link?: string;
     emailed?: number;
     contractNumber?: string;
+    templateName?: string | null;
     signerEmail?: string;
   }>({});
   const [pending, setPending] = useState(false);
@@ -70,7 +71,9 @@ export function NovoContratoForm({
       .join(", ")
   );
   const [title, setTitle] = useState("");
-  const [templateId, setTemplateId] = useState(defaultTemplateId ?? templates[0]?.id ?? "");
+  // Começa sem modelo: nada é aplicado por engano. O usuário escolhe e vê a
+  // prévia do documento antes de enviar.
+  const [templateId, setTemplateId] = useState(defaultTemplateId ?? "");
   const [value, setValue] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -130,6 +133,7 @@ export function NovoContratoForm({
         email={state.signerEmail ?? clientEmail}
         contractNumber={state.contractNumber}
         contractTitle={title}
+        templateName={state.templateName}
         error={state.error}
       />
     );
@@ -251,13 +255,24 @@ export function NovoContratoForm({
               ))}
             </select>
             {selectedTemplate && (
-              <p className="mt-1.5 text-xs text-ink-mute">
-                <Sparkles className="mr-1 inline h-3 w-3" aria-hidden />
-                {selectedTemplate.variables.length} campo
-                {selectedTemplate.variables.length === 1 ? "" : "s"} serão preenchidos
-                automaticamente:{" "}
-                {selectedTemplate.variables.map((v) => v.label).join(", ")}.
-              </p>
+              <div className="mt-2 rounded-xl border border-cobalt/25 bg-cobalt/[0.04]">
+                <div className="flex items-center gap-2 border-b border-cobalt/15 px-3.5 py-2.5">
+                  <FileText className="h-4 w-4 text-cobalt" aria-hidden />
+                  <p className="text-xs font-bold text-ink">
+                    Documento que será gerado: {selectedTemplate.name}
+                  </p>
+                </div>
+                <p className="px-3.5 py-3 text-xs leading-relaxed text-ink-soft">
+                  {selectedTemplate.preview}
+                </p>
+                <p className="border-t border-cobalt/15 px-3.5 py-2 text-[11px] text-ink-mute">
+                  <Sparkles className="mr-1 inline h-3 w-3" aria-hidden />
+                  {selectedTemplate.variables.length} campo
+                  {selectedTemplate.variables.length === 1 ? "" : "s"} preenchido
+                  {selectedTemplate.variables.length === 1 ? "" : "s"} automaticamente:{" "}
+                  {selectedTemplate.variables.map((v) => v.label).join(", ")}.
+                </p>
+              </div>
             )}
           </div>
 
