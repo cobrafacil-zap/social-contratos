@@ -1,7 +1,19 @@
 import type { NextAuthConfig } from "next-auth";
 
 // Rotas públicas: assinatura do cliente (por token), verificação, páginas legais, webhooks e cron.
-export const PUBLIC = ["/login", "/cadastro", "/s/", "/verificar/", "/privacidade", "/termos", "/api/public/", "/api/webhooks/", "/api/cron/", "/api/auth"];
+export const PUBLIC = [
+  "/login",
+  "/cadastro",
+  "/s/",
+  "/verificar/",
+  "/privacidade",
+  "/termos",
+  "/api/public/",
+  "/api/webhooks/",
+  "/api/cron/",
+  "/api/unsubscribe",
+  "/api/auth",
+];
 
 /** Sessão padrão (sem "manter conectado"): 8 horas. */
 export const SESSION_MAX_AGE = 60 * 60 * 8;
