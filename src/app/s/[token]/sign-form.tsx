@@ -4,8 +4,8 @@ import { useActionState } from "react";
 import { Loader2, PenLine, ShieldCheck } from "lucide-react";
 import { signContractAction, refuseContractAction, type SignState } from "./actions";
 import { SignaturePad, type SignatureValue } from "./signature-pad";
-import { SuccessAnimation } from "./sign-animations";
 import { useSignProgress } from "./sign-flow";
+import { SignedScreen, type SignedInfo } from "./signed-screen";
 import { FIELD_TYPE } from "@/lib/status";
 
 type Field = {
@@ -15,7 +15,18 @@ type Field = {
   required: boolean;
 };
 
-export function SignForm({ token, fields, signerName }: { token: string; fields: Field[]; signerName: string }) {
+export function SignForm({
+  token,
+  fields,
+  signerName,
+  signed,
+}: {
+  token: string;
+  fields: Field[];
+  signerName: string;
+  /** Dados para a tela final de obrigado, exibida assim que a assinatura é registrada. */
+  signed: SignedInfo;
+}) {
   const [state, action, pending] = useActionState<SignState, FormData>(
     (prev, fd) => signContractAction(prev, fd, token),
     {}
@@ -45,11 +56,16 @@ export function SignForm({ token, fields, signerName }: { token: string; fields:
   }, [state.success, reach]);
 
   if (state.success) {
+    // Tela final cobre toda a página: a tela de assinatura deixa de aparecer.
     return (
-      <SuccessAnimation>
-        Uma cópia do documento com a assinatura foi registrada, junto de data, hora, IP e
-        dispositivo. Você pode fechar esta página com segurança.
-      </SuccessAnimation>
+      <div className="fixed inset-0 z-50 overflow-y-auto bg-paper">
+        <div className="mx-auto max-w-3xl px-4 py-10">
+          <SignedScreen
+            {...signed}
+            signedAt={signed.signedAt ?? new Date()}
+          />
+        </div>
+      </div>
     );
   }
 

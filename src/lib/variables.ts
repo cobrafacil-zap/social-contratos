@@ -48,13 +48,38 @@ function formatCurrencyBR(value: string | null): string {
   return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
-/** Extrai a cidade do endereço ("Rua X, 100 - São Paulo/SP" -> "São Paulo"). */
+/**
+ * Extrai a cidade de um endereço brasileiro:
+ *   "Rua das Flores, 100 - Centro, São Paulo/SP" -> "São Paulo"
+ *   "Rua X, 100 - São Paulo/SP"                 -> "São Paulo"
+ *   "São Paulo/SP"                              -> "São Paulo"
+ *
+ * O endereço "Rua das Flores, 100" **não** tem cidade: devolve "" em vez de "100".
+ */
 function guessCity(address: string | null): string {
   if (!address) return "";
-  const parts = address.split(",");
-  const last = parts[parts.length - 1]?.trim() ?? "";
-  const city = last.split(" - ")[0]?.split("/")[0]?.trim() ?? "";
-  return city;
+  const cleaned = address.trim();
+  if (!cleaned) return "";
+
+  // Fica com a parte depois do último " - " (onde costuma vir "Cidade/UF").
+  const tail = cleaned.includes(" - ") ? cleaned.slice(cleaned.lastIndexOf(" - ") + 3) : cleaned;
+
+  // Percorre os trechos de trás para frente e pega o primeiro que tenha letras
+  // (assim "100" e "1234" nunca são aceitos como cidade).
+  const segments = tail
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .reverse();
+
+  for (const seg of segments) {
+    const candidate = seg.split("/")[0].trim();
+    if (!candidate) continue;
+    if (/^\d+$/.test(candidate)) continue; // só número: não é cidade
+    if (!/[A-Za-zÀ-ÿ]/.test(candidate)) continue; // sem letras: não é cidade
+    return candidate;
+  }
+  return "";
 }
 
 function guessState(address: string | null): string {

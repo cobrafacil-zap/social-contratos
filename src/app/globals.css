@@ -105,3 +105,50 @@
   .ss-reveal { opacity: 1 !important; }
   .ss-check-path { stroke-dashoffset: 0 !important; }
 }
+
+/* -------------------------------------------------------------------------- */
+/* Impressão / "Salvar como PDF" — só o documento assinado vai para o papel    */
+/* -------------------------------------------------------------------------- */
+
+.ss-print-only { display: none; }
+
+@media print {
+  @page {
+    margin: 16mm 14mm;
+  }
+
+  html, body {
+    background: #fff !important;
+  }
+
+  /* Esconde toda a interface, inclusive a barra fixa de progresso. */
+  .ss-print-hide,
+  header,
+  nav,
+  aside,
+  button {
+    display: none !important;
+  }
+
+  .ss-print-only {
+    display: block !important;
+  }
+
+  .ss-print-only h1,
+  .ss-print-only h2,
+  .ss-print-only h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .ss-print-only p,
+  .ss-print-only li {
+    orphans: 3;
+    widows: 3;
+  }
+
+  .ss-print-only table {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

@@ -5,6 +5,12 @@ import { db } from "@/server/db";
 import { hashToken, randomToken, sha256 } from "@/lib/contract";
 import { buildAuditHash } from "@/lib/audit";
 import { rateLimit } from "@/server/security/rate-limit";
+import {
+  isEmailConfigured,
+  sendEmail,
+  signatureCompletedNoticeEmail,
+  signatureThankYouEmail,
+} from "@/lib/email";
 
 export type SignState = {
   error?: string;
@@ -152,6 +158,42 @@ export async function signContractAction(_: SignState, formData: FormData, token
         contractId: signer.contractId,
       },
     });
+
+    // --------- E-mails: agradece ao cliente e avisa a empresa ----------
+    if (isEmailConfigured()) {
+      const appUrl = (process.env.APP_URL || "https://social-contratos.vercel.app").replace(/\/$/, "");
+      const company = signer.contract.company;
+      const signUrl = `${appUrl}/s/${token}`;
+      const signedAt = new Date();
+
+      // 1) Obrigado ao cliente, por fazer parte da equipe.
+      const thanks = signatureThankYouEmail({
+        companyName: company.name,
+        contractTitle: signer.contract.title,
+        contractNumber: signer.contract.number,
+        signerName: signer.name,
+        signUrl,
+      });
+      await sendEmail({ to: signer.email, subject: thanks.subject, html: thanks.html, text: thanks.text });
+
+      // 2) Aviso para a empresa de que o cliente assinou.
+      // Destinatário: NOTIFY_EMAIL (dedicado) > e-mail da empresa > reply-to.
+      const adminEmail =
+        process.env.NOTIFY_EMAIL || company.email || process.env.EMAIL_REPLY_TO || "";
+      if (adminEmail) {
+        const notice = signatureCompletedNoticeEmail({
+          companyName: company.name,
+          contractTitle: signer.contract.title,
+          contractNumber: signer.contract.number,
+          signerName: signer.name,
+          signerEmail: signer.email,
+          signedAt,
+          allSigned,
+          signUrl: `${appUrl}/contratos/${signer.contractId}`,
+        });
+        await sendEmail({ to: adminEmail, subject: notice.subject, html: notice.html, text: notice.text });
+      }
+    }
 
     return { success: allSigned ? "Contrato assinado com sucesso!" : "Assinatura registrada com sucesso!" };
   } catch (e) {

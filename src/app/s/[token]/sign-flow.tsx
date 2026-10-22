@@ -32,7 +32,16 @@ export function useSignProgress() {
   return useContext(ProgressContext);
 }
 
-export function SignFlow({ children, startAt = 0 }: { children: ReactNode; startAt?: number }) {
+export function SignFlow({
+  children,
+  startAt = 0,
+  doneScreen,
+}: {
+  children: ReactNode;
+  startAt?: number;
+  /** Tela final (obrigado). Quando o passo 3 é atingido, ela substitui a assinatura. */
+  doneScreen?: ReactNode;
+}) {
   const [step, setStep] = useState(startAt);
 
   const reach = useCallback((n: number) => {
@@ -41,10 +50,12 @@ export function SignFlow({ children, startAt = 0 }: { children: ReactNode; start
 
   const value = useMemo(() => ({ step, reach }), [step, reach]);
 
+  const concluido = step >= 3 && Boolean(doneScreen);
+
   return (
     <ProgressContext.Provider value={value}>
-      <ProgressSteps />
-      {children}
+      {!concluido && <ProgressSteps />}
+      {concluido ? doneScreen : children}
     </ProgressContext.Provider>
   );
 }

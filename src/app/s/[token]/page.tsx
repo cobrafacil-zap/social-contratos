@@ -7,6 +7,7 @@ import { formatDate, formatDateTime } from "@/lib/format";
 import { SignForm } from "./sign-form";
 import { ScrollReveal } from "./sign-animations";
 import { SignFlow, ReadTracker, ContinueButton } from "./sign-flow";
+import { SignedScreen } from "./signed-screen";
 
 export const metadata: Metadata = { title: "Assinar documento", robots: { index: false } };
 export const dynamic = "force-dynamic";
@@ -96,7 +97,22 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
       </header>
 
       {/* --------------------------- BARRA DE PROGRESSO --------------------------- */}
-      <SignFlow startAt={bloqueado ? 3 : 0}>
+      <SignFlow
+        startAt={alreadySigned && !revoked && !expired ? 3 : 0}
+        doneScreen={
+          <div className="mx-auto max-w-3xl px-4 py-10">
+            <SignedScreen
+              companyName={signer.contract.company.name}
+              contractTitle={signer.contract.title}
+              contractNumber={signer.contract.number}
+              signerName={signer.name}
+              signedAt={signer.signedAt}
+              allSigned={signer.contract.status === "SIGNED"}
+              documentHtml={signer.version.renderedHtml}
+            />
+          </div>
+        }
+      >
       <div className="mx-auto max-w-3xl px-4 py-8">
         {revoked && (
           <div className="rounded-xl border border-bad/30 bg-bad-tint p-6 text-center">
@@ -109,13 +125,6 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
           <div className="rounded-xl border border-warn/30 bg-warn-tint p-6 text-center">
             <p className="font-bold text-warn">Este link expirou em {formatDateTime(signer.tokenExpiresAt)}.</p>
             <p className="mt-1 text-sm text-ink-soft">Peça um novo link ao responsável da empresa.</p>
-          </div>
-        )}
-
-        {alreadySigned && !revoked && !expired && (
-          <div className="rounded-xl border border-ok/30 bg-ok-tint p-6 text-center">
-            <p className="font-bold text-ok">Este documento já foi assinado por você.</p>
-            <p className="mt-1 text-sm text-ink-soft">Assinado em {formatDateTime(signer.signedAt)}.</p>
           </div>
         )}
 
@@ -146,7 +155,20 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
             <ScrollReveal delay={120} className="mt-6">
               <section id="assinatura" className="scroll-mt-24 rounded-xl border border-paper-line bg-white p-5 sm:p-6">
                 <h2 className="mb-4 text-base font-bold">Preencha e assine</h2>
-                <SignForm token={token} fields={fields} signerName={signer.name} />
+                <SignForm
+                  token={token}
+                  fields={fields}
+                  signerName={signer.name}
+                  signed={{
+                    companyName: signer.contract.company.name,
+                    contractTitle: signer.contract.title,
+                    contractNumber: signer.contract.number,
+                    signerName: signer.name,
+                    signedAt: signer.signedAt,
+                    allSigned: signer.contract.status === "SIGNED",
+                    documentHtml: signer.version.renderedHtml,
+                  }}
+                />
               </section>
             </ScrollReveal>
 
