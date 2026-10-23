@@ -34,9 +34,12 @@ export function applyTheme(theme: Theme) {
 export function ThemeToggle({
   className = "",
   compact = false,
+  variant = "surface",
 }: {
   className?: string;
   compact?: boolean;
+  /** "onDark" é para uso sobre o herói escuro (que continua escuro nos dois temas). */
+  variant?: "surface" | "onDark";
 }) {
   const [theme, setTheme] = useState<Theme>("system");
   const [mounted, setMounted] = useState(false);
@@ -77,12 +80,13 @@ export function ThemeToggle({
       title={`${label} — clique para alternar`}
       aria-label={`${label} — clique para alternar entre claro, escuro e automático`}
       className={clsx(
-        "group inline-flex items-center gap-2 rounded-lg border px-2.5 py-2 text-sm font-semibold text-ink-soft",
-        "transition-all duration-300 ease-swift hover:-translate-y-0.5 hover:text-ink",
-        "hover:shadow-[var(--sh-soft)] active:translate-y-0 active:scale-95",
+        "group inline-flex items-center gap-2 rounded-lg border px-2.5 py-2 text-sm font-semibold",
+        "transition-all duration-300 ease-swift active:translate-y-0 active:scale-95",
+        variant === "onDark"
+          ? "border-white/15 bg-white/10 text-white/80 hover:-translate-y-0.5 hover:bg-white/20 hover:text-white"
+          : "border-paper-line bg-card text-ink-soft hover:-translate-y-0.5 hover:text-ink hover:shadow-[var(--sh-soft)]",
         className
       )}
-      style={{ borderColor: "var(--c-line)", background: "var(--c-card)" }}
     >
       <Icon
         className={clsx(

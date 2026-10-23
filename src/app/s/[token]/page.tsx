@@ -74,7 +74,7 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
               <span className="ss-float inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/80 ring-1 ring-white/15">
                 <ShieldCheck className="h-3.5 w-3.5" aria-hidden /> Documento protegido
               </span>
-              <ThemeToggle compact className="border-white/15 bg-white/10 text-white/80 hover:text-white" />
+              <ThemeToggle compact variant="onDark" />
             </div>
           </div>
 
