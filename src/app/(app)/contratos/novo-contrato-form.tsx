@@ -142,7 +142,7 @@ export function NovoContratoForm({
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-5">
       {/* ------------------------------ CLIENTE ------------------------------ */}
-      <section className="rounded-xl border border-paper-line bg-white p-5">
+      <section className="rounded-xl border border-paper-line bg-card p-5">
         <h2 className="text-base font-bold">Quem vai receber o documento</h2>
         <p className="mt-1 text-sm text-ink-mute">
           O cliente recebe o link por e-mail. Não precisa ter conta aqui.
@@ -228,7 +228,7 @@ export function NovoContratoForm({
       </section>
 
       {/* ------------------------------ CONTRATO ------------------------------ */}
-      <section className="rounded-xl border border-paper-line bg-white p-5">
+      <section className="rounded-xl border border-paper-line bg-card p-5">
         <h2 className="text-base font-bold">O que você está contratando</h2>
         <p className="mt-1 text-sm text-ink-mute">
           Os dados do cliente e da empresa são preenchidos no documento automaticamente.
@@ -356,7 +356,7 @@ export function NovoContratoForm({
       </section>
 
       {/* ------------------------------ COFRE ------------------------------ */}
-      <section className="rounded-xl border border-paper-line bg-white p-5">
+      <section className="rounded-xl border border-paper-line bg-card p-5">
         <h2 className="text-base font-bold">Onde guardar</h2>
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <div>
@@ -409,7 +409,7 @@ export function NovoContratoForm({
       </section>
 
       {/* ------------------------------ ENVIAR ------------------------------ */}
-      <section className="rounded-xl border border-paper-line bg-white p-5">
+      <section className="rounded-xl border border-paper-line bg-card p-5">
         <h2 className="text-base font-bold">Enviar para assinatura</h2>
         <p className="mt-1 text-sm text-ink-mute">
           Quem receber o link assina direto no navegador, sem instalar nada.
@@ -478,7 +478,7 @@ export function NovoContratoForm({
         </button>
         <Link
           href="/contratos"
-          className="inline-flex h-12 items-center gap-2 rounded-lg border border-paper-line bg-white px-5 text-[15px] font-semibold text-ink-soft transition-colors hover:bg-paper"
+          className="inline-flex h-12 items-center gap-2 rounded-lg border border-paper-line bg-card px-5 text-[15px] font-semibold text-ink-soft transition-colors hover:bg-paper"
         >
           <FolderPlus className="h-4 w-4" aria-hidden /> Voltar
         </Link>

@@ -87,7 +87,7 @@ export default async function ClientesPage({
         {query && (
           <Link
             href="/clientes"
-            className="inline-flex h-11 items-center justify-center rounded-lg border border-paper-line bg-white px-4 text-[15px] font-semibold text-ink-soft transition-colors hover:bg-paper"
+            className="inline-flex h-11 items-center justify-center rounded-lg border border-paper-line bg-card px-4 text-[15px] font-semibold text-ink-soft transition-colors hover:bg-paper"
           >
             Limpar
           </Link>

@@ -158,7 +158,7 @@ export default async function ConfiguracoesPage() {
           <a
             key={section.id}
             href={`#${section.id}`}
-            className="inline-flex h-9 items-center rounded-lg border border-paper-line bg-white px-3 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper"
+            className="inline-flex h-9 items-center rounded-lg border border-paper-line bg-card px-3 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper"
           >
             {section.label}
           </a>
@@ -245,7 +245,7 @@ export default async function ConfiguracoesPage() {
 
             <dl className="grid grid-cols-2 gap-3 md:grid-cols-5">
               {roleCounts.map((item) => (
-                <div key={item.role} className="rounded-xl border border-paper-line bg-white p-4">
+                <div key={item.role} className="rounded-xl border border-paper-line bg-card p-4">
                   <dt className="text-sm text-ink-mute">{item.label}</dt>
                   <dd className="mt-1 text-2xl font-extrabold tabular-nums">{item.total}</dd>
                   <p className="mt-0.5 text-xs text-ink-mute">{item.active} ativo(s)</p>

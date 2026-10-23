@@ -33,7 +33,7 @@ export function GuiaSteps({ steps }: { steps: GuiaStep[] }) {
     <ol className="space-y-4">
       {steps.map((step) => (
         <li key={step.id} id={step.id} className="scroll-mt-24">
-          <article className="rounded-xl border border-paper-line bg-white p-4 sm:p-6">
+          <article className="rounded-xl border border-paper-line bg-card p-4 sm:p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:gap-5">
               <span
                 aria-hidden
@@ -91,7 +91,7 @@ export function GuiaSteps({ steps }: { steps: GuiaStep[] }) {
                       <Link
                         key={atalho.href}
                         href={atalho.href}
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-paper-line bg-white px-3 py-1.5 text-xs font-semibold text-ink-soft transition-colors hover:bg-paper"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-paper-line bg-card px-3 py-1.5 text-xs font-semibold text-ink-soft transition-colors hover:bg-paper"
                       >
                         {atalho.label}
                         <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
@@ -136,7 +136,7 @@ export function CopyExample({
   }
 
   return (
-    <div className="flex h-full flex-col rounded-xl border border-paper-line bg-white">
+    <div className="flex h-full flex-col rounded-xl border border-paper-line bg-card">
       <div className="flex items-start justify-between gap-3 border-b border-paper-line px-4 py-3">
         <div className="min-w-0">
           <p className="text-sm font-bold">{titulo}</p>
@@ -146,7 +146,7 @@ export function CopyExample({
           type="button"
           onClick={copy}
           aria-label={`Copiar: ${titulo}`}
-          className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-lg border border-paper-line bg-white px-2.5 text-xs font-semibold text-ink-soft transition-colors hover:bg-paper"
+          className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-lg border border-paper-line bg-card px-2.5 text-xs font-semibold text-ink-soft transition-colors hover:bg-paper"
         >
           {copied ? (
             <>

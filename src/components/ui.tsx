@@ -22,7 +22,22 @@ export function PageHeader({
 }
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <section className={`rounded-xl border border-paper-line bg-white ${className}`}>{children}</section>;
+  return <section className={`surface ${className}`}>{children}</section>;
+}
+
+/** Cartão que reage ao passar o mouse — para listas e atalhos. */
+export function CardInteractive({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section className={`surface surface-hover ${className}`} tabIndex={0}>
+      {children}
+    </section>
+  );
 }
 
 export function CardHeader({ title, action }: { title: string; action?: ReactNode }) {
@@ -47,7 +62,13 @@ export function EmptyState({
 }) {
   return (
     <div className="px-5 py-12 text-center">
-      {icon && <div className="mb-3 flex justify-center text-ink-mute/60">{icon}</div>}
+      {icon && (
+        <div className="mb-3 flex justify-center">
+          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cobalt-tint text-cobalt">
+            {icon}
+          </span>
+        </div>
+      )}
       <p className="font-semibold">{title}</p>
       {description && <p className="mx-auto mt-1 max-w-md text-sm text-ink-mute">{description}</p>}
       {action && <div className="mt-5 flex justify-center">{action}</div>}
@@ -65,11 +86,11 @@ export function EmptyPage({
   action?: { href: string; label: string };
 }) {
   return (
-    <div className="rounded-xl border border-dashed border-paper-line bg-white px-6 py-16 text-center">
+    <div className="surface mesh-bg border-dashed px-6 py-16 text-center">
       <p className="text-lg font-bold">{title}</p>
       {description && <p className="mx-auto mt-2 max-w-md text-ink-mute">{description}</p>}
       {action && (
-        <Link href={action.href} className="btn mt-6 inline-flex">
+        <Link href={action.href} className="btn ss-pop mt-6 inline-flex">
           {action.label}
         </Link>
       )}
@@ -90,12 +111,14 @@ export function Alert({
     success: "bg-ok-tint text-ok",
     warn: "bg-warn-tint text-warn",
   } as const;
-  return <div className={`rounded-lg px-3.5 py-2.5 text-sm ${tones[tone]}`}>{children}</div>;
+  return (
+    <div className={`ss-pop rounded-lg px-3.5 py-2.5 text-sm ${tones[tone]}`}>{children}</div>
+  );
 }
 
 export function Stat({ label, value, hint }: { label: string; value: ReactNode; hint?: string }) {
   return (
-    <div className="rounded-xl border border-paper-line bg-white p-4">
+    <div className="surface surface-hover p-4">
       <dt className="text-sm text-ink-mute">{label}</dt>
       <dd className="mt-1 text-2xl font-extrabold tabular-nums">{value}</dd>
       {hint && <p className="mt-0.5 text-xs text-ink-mute">{hint}</p>}
@@ -281,7 +304,7 @@ export function SubmitButton({
     "inline-flex h-11 items-center justify-center gap-2 rounded-lg px-5 text-[15px] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60";
   const styles = {
     primary: "bg-cobalt text-white hover:bg-cobalt-dark",
-    secondary: "border border-paper-line bg-white text-ink-soft hover:bg-paper",
+    secondary: "border border-paper-line bg-card text-ink-soft hover:bg-paper",
     danger: "bg-bad text-white hover:brightness-95",
   } as const;
   return (

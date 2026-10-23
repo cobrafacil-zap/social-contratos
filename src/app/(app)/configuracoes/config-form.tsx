@@ -41,7 +41,7 @@ export function ConfigForm({ settings }: { settings: SettingsDefaults }) {
               name="accentColor"
               type="color"
               defaultValue={settings.accentColor}
-              className="h-11 w-16 cursor-pointer rounded-lg border border-paper-line bg-white p-1"
+              className="h-11 w-16 cursor-pointer rounded-lg border border-paper-line bg-card p-1"
             />
             <span className="text-xs text-ink-mute">Usada nos elementos de destaque do sistema.</span>
           </div>

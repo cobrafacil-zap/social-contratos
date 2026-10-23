@@ -83,7 +83,7 @@ export default async function EmpresaPage() {
         action={
           <Link
             href="/empresa/equipe"
-            className="inline-flex h-11 items-center gap-2 rounded-lg border border-paper-line bg-white px-5 text-[15px] font-semibold text-ink-soft transition-colors hover:bg-paper"
+            className="inline-flex h-11 items-center gap-2 rounded-lg border border-paper-line bg-card px-5 text-[15px] font-semibold text-ink-soft transition-colors hover:bg-paper"
           >
             <Users className="h-4 w-4" aria-hidden />
             Equipe
@@ -129,7 +129,7 @@ export default async function EmpresaPage() {
         <div className="px-5 py-5">
           <dl className="grid grid-cols-2 gap-3 md:grid-cols-4">
             {contractCards.map((c) => (
-              <div key={c.label} className="rounded-xl border border-paper-line bg-white p-4">
+              <div key={c.label} className="rounded-xl border border-paper-line bg-card p-4">
                 <dt className="text-sm text-ink-mute">{c.label}</dt>
                 <dd className="mt-1 text-3xl font-extrabold tabular-nums">{c.value}</dd>
               </div>

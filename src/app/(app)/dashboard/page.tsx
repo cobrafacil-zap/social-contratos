@@ -97,7 +97,7 @@ export default async function DashboardPage() {
 
       <dl className="grid grid-cols-2 gap-3 md:grid-cols-4">
         {cards.map((c) => (
-          <div key={c.label} className="rounded-xl border border-paper-line bg-white p-4">
+          <div key={c.label} className="rounded-xl border border-paper-line bg-card p-4">
             <dt className="text-sm text-ink-mute">{c.label}</dt>
             <dd className="mt-1 text-3xl font-extrabold tabular-nums">{c.value}</dd>
           </div>
@@ -105,7 +105,7 @@ export default async function DashboardPage() {
       </dl>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-3">
-        <section className="rounded-xl border border-paper-line bg-white lg:col-span-2">
+        <section className="rounded-xl border border-paper-line bg-card lg:col-span-2">
           <div className="flex items-center justify-between border-b border-paper-line px-5 py-4">
             <h2 className="text-base font-bold">Contratos recentes</h2>
             <Link href="/contratos" className="inline-flex items-center gap-1 text-sm font-semibold text-cobalt hover:underline">
@@ -142,7 +142,7 @@ export default async function DashboardPage() {
         </section>
 
         <div className="space-y-6">
-          <section className="rounded-xl border border-paper-line bg-white p-5">
+          <section className="rounded-xl border border-paper-line bg-card p-5">
             <h2 className="mb-4 text-base font-bold">Resumo</h2>
             <dl className="space-y-3 text-sm">
               <div className="flex items-center justify-between gap-3">
@@ -174,7 +174,7 @@ export default async function DashboardPage() {
             </dl>
           </section>
 
-          <section className="rounded-xl border border-paper-line bg-white">
+          <section className="rounded-xl border border-paper-line bg-card">
             <div className="flex items-center justify-between border-b border-paper-line px-5 py-4">
               <h2 className="text-base font-bold">Últimas assinaturas</h2>
               <Link href="/assinaturas" className="inline-flex items-center gap-1 text-sm font-semibold text-cobalt hover:underline">

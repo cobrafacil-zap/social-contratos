@@ -72,13 +72,13 @@ export default async function ContaPage() {
         <CardHeader title="Sessão" />
         <div className="space-y-4 px-5 py-5">
           <dl className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border border-paper-line bg-white p-4">
+            <div className="rounded-xl border border-paper-line bg-card p-4">
               <dt className="text-sm text-ink-mute">Último acesso</dt>
               <dd className="mt-1 font-semibold tabular-nums">
                 {formatDateTime(user.lastLoginAt)}
               </dd>
             </div>
-            <div className="rounded-xl border border-paper-line bg-white p-4">
+            <div className="rounded-xl border border-paper-line bg-card p-4">
               <dt className="text-sm text-ink-mute">Conta criada em</dt>
               <dd className="mt-1 font-semibold tabular-nums">
                 {formatDateTime(user.createdAt)}

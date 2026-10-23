@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Logo } from "@/components/logo";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { LoginForm } from "./login-form";
 
 export const metadata: Metadata = { title: "Entrar" };
@@ -9,7 +10,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const { next } = await searchParams;
   return (
     <main className="grid min-h-dvh lg:grid-cols-[1.1fr_1fr]">
-      <section className="hidden flex-col justify-between bg-ink p-12 text-white lg:flex">
+      <section className="hidden flex-col justify-between bg-solid p-12 text-white lg:flex">
         <Logo light />
         <div className="max-w-md">
           <h1 className="text-4xl font-extrabold leading-tight tracking-tight">Contratos assinados, guardados e comprováveis.</h1>
@@ -17,7 +18,10 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         </div>
         <p className="text-sm text-white/50">Acesso restrito a usuários autorizados.</p>
       </section>
-      <section className="flex items-center justify-center p-6">
+      <section className="relative flex items-center justify-center p-6">
+        <div className="absolute right-5 top-5">
+          <ThemeToggle compact />
+        </div>
         <div className="w-full max-w-sm">
           <div className="mb-8 lg:hidden"><Logo /></div>
           <h2 className="text-2xl font-extrabold tracking-tight">Entrar na sua conta</h2>

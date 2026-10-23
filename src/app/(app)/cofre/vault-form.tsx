@@ -61,12 +61,12 @@ function Modal({
       role="dialog"
       aria-modal="true"
       aria-label={title}
-      className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-ink/40 p-4 pt-14"
+      className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-black/40 p-4 pt-14"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <div className="w-full max-w-lg rounded-xl border border-paper-line bg-white p-5 shadow-2xl">
+      <div className="w-full max-w-lg rounded-xl border border-paper-line bg-card p-5 shadow-2xl">
         <div className="mb-4 flex items-start justify-between gap-3">
           <h2 className="text-base font-bold">{title}</h2>
           <button
@@ -90,7 +90,7 @@ function Modal({
 /* -------------------------------------------------------------------------- */
 
 const softButton =
-  "inline-flex h-9 items-center gap-1.5 rounded-lg border border-paper-line bg-white px-3 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex h-9 items-center gap-1.5 rounded-lg border border-paper-line bg-card px-3 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper disabled:cursor-not-allowed disabled:opacity-60";
 
 const dangerButton =
   "inline-flex h-9 items-center gap-1.5 rounded-lg border border-bad/30 bg-bad-tint px-3 text-sm font-semibold text-bad transition-colors hover:bg-bad/10 disabled:cursor-not-allowed disabled:opacity-60";
@@ -150,7 +150,7 @@ function VaultForm({
             type="color"
             value={color}
             onChange={(event) => setColor(event.target.value)}
-            className="h-11 w-16 cursor-pointer rounded-lg border border-paper-line bg-white p-1"
+            className="h-11 w-16 cursor-pointer rounded-lg border border-paper-line bg-card p-1"
           />
           <span className="font-mono text-sm text-ink-mute">{color}</span>
         </div>
@@ -166,7 +166,7 @@ function VaultForm({
         <button
           type="button"
           onClick={onDone}
-          className="inline-flex h-11 items-center justify-center rounded-lg border border-paper-line bg-white px-5 text-[15px] font-semibold text-ink-soft transition-colors hover:bg-paper"
+          className="inline-flex h-11 items-center justify-center rounded-lg border border-paper-line bg-card px-5 text-[15px] font-semibold text-ink-soft transition-colors hover:bg-paper"
         >
           Cancelar
         </button>
@@ -309,7 +309,7 @@ export function DeleteVaultButton({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="inline-flex h-11 items-center justify-center rounded-lg border border-paper-line bg-white px-5 text-[15px] font-semibold text-ink-soft transition-colors hover:bg-paper"
+                className="inline-flex h-11 items-center justify-center rounded-lg border border-paper-line bg-card px-5 text-[15px] font-semibold text-ink-soft transition-colors hover:bg-paper"
               >
                 Cancelar
               </button>

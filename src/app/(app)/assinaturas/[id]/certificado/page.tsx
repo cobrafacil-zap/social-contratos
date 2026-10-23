@@ -74,7 +74,7 @@ export default async function CertificadoPage({ params }: { params: Promise<{ id
         <PrintButton />
       </div>
 
-      <article className="rounded-xl border border-paper-line bg-white p-6 print:border-0 print:p-0">
+      <article className="rounded-xl border border-paper-line bg-card p-6 print:border-0 print:p-0">
         <header className="border-b-2 border-ink pb-4">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-mute">
             Certificado de assinatura

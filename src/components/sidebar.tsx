@@ -35,23 +35,55 @@ export function Sidebar() {
       <div className="px-2 pb-2 pt-1"><Logo /></div>
       {GROUPS.map((g, i) => (
         <div key={i}>
-          {g.title && <p className="mb-1.5 px-3 text-xs font-semibold text-ink-mute">{g.title}</p>}
-          <ul className="space-y-0.5">
+          {g.title && (
+            <p className="mb-1.5 px-3 text-[11px] font-bold uppercase tracking-[0.12em] text-ink-mute">
+              {g.title}
+            </p>
+          )}
+          <ul className="ss-stagger space-y-0.5">
             {g.items.map(({ label, href, icon: Icon, ready }) => {
               const active = path === href || (href !== "/dashboard" && path.startsWith(href + "/"));
-              const base = "flex h-10 items-center gap-3 rounded-lg px-3 text-[15px] font-medium";
+              const base =
+                "group relative flex h-10 items-center gap-3 rounded-lg px-3 text-[15px] font-medium transition-all duration-200 ease-swift";
               return (
                 <li key={href}>
                   {ready ? (
-                    <Link href={href} aria-current={active ? "page" : undefined}
-                      className={clsx(base, active ? "bg-cobalt-tint text-cobalt" : "text-ink-soft hover:bg-paper")}>
-                      <Icon className="h-[18px] w-[18px]" />{label}
+                    <Link
+                      href={href}
+                      aria-current={active ? "page" : undefined}
+                      className={clsx(
+                        base,
+                        active
+                          ? "bg-cobalt-tint text-cobalt shadow-[var(--sh-soft)]"
+                          : "text-ink-soft hover:translate-x-0.5 hover:bg-paper hover:text-ink"
+                      )}
+                    >
+                      {active && (
+                        <span
+                          aria-hidden
+                          className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-cobalt"
+                        />
+                      )}
+                      <Icon
+                        className={clsx(
+                          "h-[18px] w-[18px] transition-transform duration-300 ease-swift",
+                          "group-hover:scale-110",
+                          active && "scale-105"
+                        )}
+                      />
+                      {label}
                     </Link>
                   ) : (
-                    <span aria-disabled="true" title="Disponível nos próximos módulos"
-                      className={clsx(base, "cursor-not-allowed text-ink-mute/70")}>
-                      <Icon className="h-[18px] w-[18px]" />{label}
-                      <span className="ml-auto rounded-md bg-paper px-1.5 py-0.5 text-[11px] font-semibold text-ink-mute">em breve</span>
+                    <span
+                      aria-disabled="true"
+                      title="Disponível nos próximos módulos"
+                      className={clsx(base, "cursor-not-allowed text-ink-mute/70")}
+                    >
+                      <Icon className="h-[18px] w-[18px]" />
+                      {label}
+                      <span className="ml-auto rounded-md bg-paper px-1.5 py-0.5 text-[11px] font-semibold text-ink-mute">
+                        em breve
+                      </span>
                     </span>
                   )}
                 </li>

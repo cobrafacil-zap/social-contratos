@@ -24,7 +24,7 @@ export function UserRoleForm({ userId, role }: { userId: string; role: string })
         name="role"
         defaultValue={role}
         aria-label="Papel do usuário"
-        className="h-9 w-auto min-w-[9.5rem] rounded-lg border border-paper-line bg-white px-3 text-sm text-ink transition-colors focus:border-cobalt focus:outline-none focus:ring-2 focus:ring-cobalt/20"
+        className="h-9 w-auto min-w-[9.5rem] rounded-lg border border-paper-line bg-card px-3 text-sm text-ink transition-colors focus:border-cobalt focus:outline-none focus:ring-2 focus:ring-cobalt/20"
       >
         {ROLE_OPTIONS.map((option) => (
           <option key={option.value} value={option.value}>
@@ -35,7 +35,7 @@ export function UserRoleForm({ userId, role }: { userId: string; role: string })
       <button
         type="submit"
         disabled={pending}
-        className="h-9 shrink-0 rounded-lg border border-paper-line bg-white px-3 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper disabled:opacity-60"
+        className="h-9 shrink-0 rounded-lg border border-paper-line bg-card px-3 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper disabled:opacity-60"
       >
         {pending ? "..." : "Salvar"}
       </button>
@@ -68,7 +68,7 @@ export function UserStatusForm({
         className={
           isActive
             ? "h-9 rounded-lg bg-bad px-3 text-sm font-semibold text-white transition-colors hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60"
-            : "h-9 rounded-lg border border-paper-line bg-white px-3 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper disabled:cursor-not-allowed disabled:opacity-60"
+            : "h-9 rounded-lg border border-paper-line bg-card px-3 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper disabled:cursor-not-allowed disabled:opacity-60"
         }
       >
         {pending ? "..." : isActive ? "Desativar" : "Ativar"}
@@ -97,7 +97,7 @@ export function AddUserForm() {
         <Alert tone="success">
           <p className="font-semibold">Usuário criado com sucesso.</p>
           <p className="mt-1">Copie os dados abaixo e envie ao usuário — o app não envia e-mails.</p>
-          <dl className="mt-2 space-y-1 rounded-lg bg-white/70 px-3 py-2 text-sm">
+          <dl className="mt-2 space-y-1 rounded-lg bg-paper px-3 py-2 text-sm">
             <div className="flex gap-2">
               <dt className="font-semibold">E-mail:</dt>
               <dd className="font-mono break-all">{state.createdEmail}</dd>

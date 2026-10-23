@@ -70,7 +70,7 @@ export function CsvExport({
               <button
                 type="button"
                 onClick={copyCsv}
-                className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-paper-line bg-white px-3 text-sm font-semibold text-ink-soft hover:bg-paper"
+                className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-paper-line bg-card px-3 text-sm font-semibold text-ink-soft hover:bg-paper"
               >
                 {copied ? <Check className="h-4 w-4" aria-hidden /> : <Copy className="h-4 w-4" aria-hidden />}
                 {copied ? "CSV copiado" : "Copiar CSV"}
@@ -78,7 +78,7 @@ export function CsvExport({
               <a
                 href={`data:text/csv;charset=utf-8,${encodeURIComponent(state.csv)}`}
                 download={state.fileName ?? "assinaturas.csv"}
-                className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-paper-line bg-white px-3 text-sm font-semibold text-ink-soft hover:bg-paper"
+                className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-paper-line bg-card px-3 text-sm font-semibold text-ink-soft hover:bg-paper"
               >
                 <Download className="h-4 w-4" aria-hidden />
                 Baixar {state.fileName ?? "assinaturas.csv"}

@@ -103,7 +103,7 @@ export function EmpresaForm({ company }: { company: EmpresaDefaults }) {
               name="primaryColor"
               type="color"
               defaultValue={company.primaryColor}
-              className="h-11 w-16 cursor-pointer rounded-lg border border-paper-line bg-white p-1"
+              className="h-11 w-16 cursor-pointer rounded-lg border border-paper-line bg-card p-1"
             />
             <span className="text-xs text-ink-mute">
               Usada em botões, destaques e cabeçalhos dos documentos.
@@ -122,7 +122,7 @@ export function EmpresaForm({ company }: { company: EmpresaDefaults }) {
               name="secondaryColor"
               type="color"
               defaultValue={company.secondaryColor}
-              className="h-11 w-16 cursor-pointer rounded-lg border border-paper-line bg-white p-1"
+              className="h-11 w-16 cursor-pointer rounded-lg border border-paper-line bg-card p-1"
             />
             <span className="text-xs text-ink-mute">Usada em textos e rodapés dos documentos.</span>
           </div>

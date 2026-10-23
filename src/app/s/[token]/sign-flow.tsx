@@ -67,7 +67,7 @@ function ProgressSteps() {
   const pct = step === 0 ? 6 : Math.round((step / STEPS.length) * 100);
 
   return (
-    <div className="sticky top-0 z-30 border-b border-paper-line bg-white/90 backdrop-blur">
+    <div className="sticky top-0 z-30 border-b border-paper-line bg-card/90 backdrop-blur">
       <div className="mx-auto max-w-3xl px-4 py-3">
         <div className="relative h-1.5 overflow-hidden rounded-full bg-paper-line">
           <div
@@ -170,7 +170,7 @@ export function ContinueButton() {
         reach(1);
         document.getElementById("assinatura")?.scrollIntoView({ behavior: "smooth", block: "start" });
       }}
-      className="mt-6 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-ink text-sm font-bold text-white transition-all duration-200 hover:bg-cobalt active:scale-[0.99]"
+      className="mt-6 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-solid text-sm font-bold text-white transition-all duration-200 hover:bg-cobalt active:scale-[0.99]"
     >
       Já li o documento — continuar
     </button>

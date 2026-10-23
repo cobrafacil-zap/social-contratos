@@ -52,7 +52,7 @@ export function SendSuccess({
   }));
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-paper-line bg-white p-8 text-center">
+    <div className="relative overflow-hidden rounded-2xl border border-paper-line bg-card p-8 text-center">
       <div className="pointer-events-none absolute inset-0" aria-hidden>
         {confetti.map((c, i) => (
           <span
@@ -127,7 +127,7 @@ export function SendSuccess({
         <button
           type="button"
           onClick={copy}
-          className="inline-flex h-[42px] shrink-0 items-center justify-center gap-2 rounded-lg border border-paper-line bg-white px-4 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper"
+          className="inline-flex h-[42px] shrink-0 items-center justify-center gap-2 rounded-lg border border-paper-line bg-card px-4 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper"
         >
           {copied ? <Check className="h-4 w-4 text-ok" aria-hidden /> : <Copy className="h-4 w-4" aria-hidden />}
           {copied ? "Copiado!" : "Copiar link"}
@@ -140,7 +140,7 @@ export function SendSuccess({
         </Link>
         <Link
           href="/contratos/novo"
-          className="inline-flex h-11 items-center gap-2 rounded-lg border border-paper-line bg-white px-5 text-[15px] font-semibold text-ink-soft transition-colors hover:bg-paper"
+          className="inline-flex h-11 items-center gap-2 rounded-lg border border-paper-line bg-card px-5 text-[15px] font-semibold text-ink-soft transition-colors hover:bg-paper"
         >
           <PartyPopper className="h-4 w-4" aria-hidden /> Enviar outro
         </Link>

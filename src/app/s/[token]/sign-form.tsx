@@ -117,7 +117,7 @@ export function SignForm({
                   onChange={(v) => setSignatures((s) => ({ ...s, [f.id]: v }))}
                 />
               ) : f.type === "CHECKBOX" ? (
-                <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-paper-line bg-white p-4">
+                <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-paper-line bg-card p-4">
                   <input
                     type="checkbox"
                     checked={values[f.id] === "true"}
@@ -127,7 +127,7 @@ export function SignForm({
                   <span className="text-sm font-medium">{f.label || FIELD_TYPE[f.type]}</span>
                 </label>
               ) : (
-                <div className="rounded-xl border border-paper-line bg-white p-4">
+                <div className="rounded-xl border border-paper-line bg-card p-4">
                   <label htmlFor={`field_${f.id}`} className="mb-1.5 block text-sm font-semibold">
                     {f.label || FIELD_TYPE[f.type]}
                     {f.required && <span className="ml-1 text-bad">*</span>}
@@ -147,7 +147,7 @@ export function SignForm({
         </div>
       )}
 
-      <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-paper-line bg-white p-4 transition-all duration-200 hover:border-cobalt/40 hover:shadow-sm">
+      <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-paper-line bg-card p-4 transition-all duration-200 hover:border-cobalt/40 hover:shadow-sm">
         <input
           type="checkbox"
           checked={terms}

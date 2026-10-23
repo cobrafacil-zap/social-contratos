@@ -47,7 +47,7 @@ export default async function ModeloDetalhePage({
         action={
           <Link
             href="/modelos"
-            className="inline-flex h-11 items-center justify-center rounded-lg border border-paper-line bg-white px-5 text-[15px] font-semibold text-ink-soft hover:bg-paper"
+            className="inline-flex h-11 items-center justify-center rounded-lg border border-paper-line bg-card px-5 text-[15px] font-semibold text-ink-soft hover:bg-paper"
           >
             Voltar
           </Link>
@@ -74,7 +74,7 @@ export default async function ModeloDetalhePage({
                 </form>
                 <Link
                   href={`/modelos/${template.id}`}
-                  className="inline-flex h-9 items-center justify-center rounded-lg border border-paper-line bg-white px-4 text-sm font-semibold text-ink-soft hover:bg-paper"
+                  className="inline-flex h-9 items-center justify-center rounded-lg border border-paper-line bg-card px-4 text-sm font-semibold text-ink-soft hover:bg-paper"
                 >
                   Cancelar
                 </Link>
@@ -123,7 +123,7 @@ export default async function ModeloDetalhePage({
               </Link>
               <Link
                 href={`/modelos/${template.id}/editar`}
-                className="inline-flex h-11 w-full items-center justify-center rounded-lg border border-paper-line bg-white px-5 text-[15px] font-semibold text-ink-soft hover:bg-paper"
+                className="inline-flex h-11 w-full items-center justify-center rounded-lg border border-paper-line bg-card px-5 text-[15px] font-semibold text-ink-soft hover:bg-paper"
               >
                 Editar
               </Link>

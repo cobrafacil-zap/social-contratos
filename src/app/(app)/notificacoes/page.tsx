@@ -130,7 +130,7 @@ export default async function NotificacoesPage({ searchParams }: { searchParams:
                       {contract && (
                         <Link
                           href={`/contratos/${contract.id}`}
-                          className="inline-flex h-9 items-center rounded-lg border border-paper-line bg-white px-3 text-sm font-semibold text-ink-soft hover:bg-paper"
+                          className="inline-flex h-9 items-center rounded-lg border border-paper-line bg-card px-3 text-sm font-semibold text-ink-soft hover:bg-paper"
                         >
                           Ver contrato
                         </Link>

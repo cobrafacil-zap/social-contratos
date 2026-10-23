@@ -2,20 +2,277 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
-  body { @apply bg-paper text-ink antialiased; }
-  :focus-visible { @apply outline-2 outline-offset-2 outline-cobalt; }
+/* ========================================================================== */
+/* TOKENS DE COR — tema claro (padrão)                                        */
+/* ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* Texto */
+  --c-ink: #10131a;
+  --c-ink-soft: #3b4252;
+  --c-ink-mute: #6b7385;
+
+  /* Superfícies */
+  --c-paper: #f4f6fa;
+  --c-card: #ffffff;
+  --c-line: #e4e7ec;
+
+  /* Superfície escura fixa (heróis e botões primários) */
+  --c-solid: #10131a;
+
+  /* Marca */
+  --c-cobalt: #2f4bff;
+  --c-cobalt-dark: #2339d6;
+  --c-cobalt-tint: #eaeeff;
+
+  --c-ok: #12805c;
+  --c-ok-tint: #e3f4ec;
+  --c-warn: #a86400;
+  --c-warn-tint: #fff1d6;
+  --c-bad: #b42318;
+  --c-bad-tint: #fde8e6;
+
+  /* Sombras */
+  --sh-soft: 0 1px 2px rgba(16, 19, 26, 0.05);
+  --sh-card: 0 1px 3px rgba(16, 19, 26, 0.06), 0 8px 24px -12px rgba(16, 19, 26, 0.1);
+  --sh-lift: 0 2px 6px rgba(16, 19, 26, 0.08), 0 18px 42px -18px rgba(16, 19, 26, 0.22);
+  --sh-glow: 0 10px 34px -12px rgba(47, 75, 255, 0.5);
+
+  /* Acento decorativo de fundo */
+  --c-mesh-a: rgba(47, 75, 255, 0.1);
+  --c-mesh-b: rgba(18, 128, 92, 0.1);
 }
+
+/* ========================================================================== */
+/* TOKENS DE COR — tema escuro                                                */
+/* ========================================================================== */
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --c-ink: #e9edf5;
+  --c-ink-soft: #b7c0d1;
+  --c-ink-mute: #8792a6;
+
+  --c-paper: #0b0e15;
+  --c-card: #151b26;
+  --c-line: #242d3b;
+
+  --c-solid: #1c2432;
+
+  --c-cobalt: #4c6bff;
+  --c-cobalt-dark: #6b87ff;
+  --c-cobalt-tint: #17203f;
+
+  --c-ok: #2fbf8e;
+  --c-ok-tint: #0d2a22;
+  --c-warn: #d99a45;
+  --c-warn-tint: #2b2012;
+  --c-bad: #f2746b;
+  --c-bad-tint: #2c1513;
+
+  --sh-soft: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --sh-card: 0 1px 3px rgba(0, 0, 0, 0.5), 0 10px 28px -14px rgba(0, 0, 0, 0.7);
+  --sh-lift: 0 2px 8px rgba(0, 0, 0, 0.55), 0 22px 50px -20px rgba(0, 0, 0, 0.8);
+  --sh-glow: 0 10px 34px -12px rgba(107, 135, 255, 0.55);
+
+  --c-mesh-a: rgba(107, 135, 255, 0.16);
+  --c-mesh-b: rgba(47, 191, 142, 0.12);
+}
+
+/* ========================================================================== */
+/* BASE                                                                       */
+/* ========================================================================== */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper text-ink antialiased;
+    transition:
+      background-color 0.35s ease,
+      color 0.35s ease;
+  }
+
+  /* Troca de tema suave nas superfícies principais */
+  aside,
+  header,
+  main,
+  section,
+  table {
+    transition:
+      background-color 0.32s ease,
+      border-color 0.32s ease,
+      color 0.32s ease;
+  }
+
+  /* Troca de tema sem piscar */
+  *,
+  *::before,
+  *::after {
+    border-color: var(--c-line);
+  }
+
+  ::selection {
+    background: var(--c-cobalt-tint);
+    color: var(--c-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--c-cobalt);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+
+  /* Scrollbar discreta */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--c-ink-mute) 35%, transparent);
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--c-ink-mute) 60%, transparent);
+    background-clip: content-box;
+  }
+}
+
+/* ========================================================================== */
+/* COMPONENTES                                                                */
+/* ========================================================================== */
 
 @layer components {
-  .field { @apply h-11 w-full rounded-lg border border-paper-line bg-white px-3.5 text-[15px] text-ink placeholder:text-ink-mute transition-colors focus:border-cobalt focus:outline-none focus:ring-2 focus:ring-cobalt/20; }
-  .btn { @apply inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-cobalt px-5 text-[15px] font-semibold text-white transition-colors hover:bg-cobalt-dark disabled:cursor-not-allowed disabled:opacity-60; }
+  .field {
+    @apply h-11 w-full rounded-lg border bg-card px-3.5 text-[15px] text-ink placeholder:text-ink-mute;
+    border-color: var(--c-line);
+    box-shadow: var(--sh-soft);
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.25s ease;
+  }
+  .field:hover {
+    border-color: color-mix(in srgb, var(--c-cobalt) 35%, var(--c-line));
+  }
+  .field:focus {
+    @apply outline-none;
+    border-color: var(--c-cobalt);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-cobalt) 22%, transparent);
+  }
+
+  .btn {
+    @apply inline-flex h-11 items-center justify-center gap-2 rounded-lg px-5 text-[15px] font-semibold text-white;
+    background: var(--c-cobalt);
+    box-shadow: var(--sh-soft);
+    transition:
+      transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.25s ease,
+      background-color 0.25s ease,
+      opacity 0.2s ease;
+  }
+  .btn:hover:not(:disabled) {
+    background: var(--c-cobalt-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--sh-glow);
+  }
+  .btn:active:not(:disabled) {
+    transform: translateY(0) scale(0.985);
+  }
+  .btn:disabled {
+    @apply cursor-not-allowed opacity-60;
+  }
+
+  /* Botão neutro / secundário */
+  .btn-ghost {
+    @apply inline-flex h-11 items-center justify-center gap-2 rounded-lg border px-5 text-[15px] font-semibold text-ink-soft;
+    background: var(--c-card);
+    border-color: var(--c-line);
+    transition:
+      transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.2s ease,
+      color 0.2s ease,
+      box-shadow 0.25s ease;
+  }
+  .btn-ghost:hover {
+    border-color: color-mix(in srgb, var(--c-cobalt) 45%, var(--c-line));
+    color: var(--c-ink);
+    box-shadow: var(--sh-soft);
+    transform: translateY(-1px);
+  }
+
+  /* Cartão com elevação suave e hover */
+  .surface {
+    @apply rounded-xl border bg-card;
+    border-color: var(--c-line);
+    box-shadow: var(--sh-soft);
+    transition:
+      box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.25s ease,
+      background-color 0.3s ease;
+  }
+  .surface-hover:hover {
+    box-shadow: var(--sh-card);
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--c-cobalt) 30%, var(--c-line));
+  }
+
+  /* Grade decorativa de fundo */
+  .mesh-bg {
+    background-image:
+      radial-gradient(circle at 15% 8%, var(--c-mesh-a), transparent 42%),
+      radial-gradient(circle at 85% 2%, var(--c-mesh-b), transparent 40%);
+  }
+
+  /* Listas e linhas de tabela */
+  .row-hover {
+    transition: background-color 0.18s ease;
+  }
+  .row-hover:hover {
+    background-color: color-mix(in srgb, var(--c-cobalt) 5%, transparent);
+  }
+
+  /* Hover animado em qualquer tabela do sistema */
+  tbody tr {
+    transition: background-color 0.18s ease;
+  }
+  tbody tr:hover {
+    background-color: color-mix(in srgb, var(--c-cobalt) 6%, transparent);
+  }
+
+  /* Links de linha inteira ganham cor ao passar o mouse */
+  a {
+    transition: color 0.18s ease;
+  }
+
+  /* Link com sublinhado animado */
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1.5px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .link-underline:hover {
+    background-size: 100% 1.5px;
+  }
 }
 
-/* -------------------------------------------------------------------------- */
-/* Animações da página pública de assinatura                                  */
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
+/* ANIMAÇÕES                                                                  */
+/* ========================================================================== */
 
 /* Aparição suave ao rolar a página */
 @keyframes ss-fade-up {
@@ -61,11 +318,42 @@
   50%      { transform: translateY(-6px); }
 }
 
+/* Entrada das páginas */
+@keyframes ss-page-in {
+  from { opacity: 0; transform: translate3d(0, 12px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* Brilho percorrendo o botão principal */
+@keyframes ss-sheen {
+  0%   { transform: translateX(-120%) skewX(-18deg); }
+  100% { transform: translateX(320%) skewX(-18deg); }
+}
+
+/* Anel de carregamento */
+@keyframes ss-spin {
+  to { transform: rotate(360deg); }
+}
+
 @layer utilities {
   .ss-reveal { opacity: 0; }
   .ss-reveal.is-visible { animation: ss-fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
   .ss-pop { animation: ss-pop-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .ss-page-in { animation: ss-page-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+  /* Escalonamento da entrada dos filhos */
+  .ss-stagger > * {
+    animation: ss-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .ss-stagger > *:nth-child(1) { animation-delay: 0ms; }
+  .ss-stagger > *:nth-child(2) { animation-delay: 55ms; }
+  .ss-stagger > *:nth-child(3) { animation-delay: 110ms; }
+  .ss-stagger > *:nth-child(4) { animation-delay: 165ms; }
+  .ss-stagger > *:nth-child(5) { animation-delay: 220ms; }
+  .ss-stagger > *:nth-child(6) { animation-delay: 275ms; }
+  .ss-stagger > *:nth-child(7) { animation-delay: 330ms; }
+  .ss-stagger > *:nth-child(8) { animation-delay: 385ms; }
 
   .ss-check-path {
     stroke-dasharray: 48;
@@ -79,7 +367,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--c-card) 55%, transparent), transparent);
     animation: ss-shimmer 2.4s ease-in-out infinite;
   }
 
@@ -94,6 +382,22 @@
   }
 
   .ss-float { animation: ss-float 4s ease-in-out infinite; }
+
+  .ss-sheen {
+    position: relative;
+    overflow: hidden;
+  }
+  .ss-sheen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+    animation: ss-sheen 4.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .ss-spin { animation: ss-spin 0.8s linear infinite; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -106,9 +410,9 @@
   .ss-check-path { stroke-dashoffset: 0 !important; }
 }
 
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
 /* Impressão / "Salvar como PDF" — só o documento assinado vai para o papel    */
-/* -------------------------------------------------------------------------- */
+/* ========================================================================== */
 
 .ss-print-only { display: none; }
 
@@ -119,6 +423,7 @@
 
   html, body {
     background: #fff !important;
+    color: #10131a !important;
   }
 
   /* Esconde toda a interface, inclusive a barra fixa de progresso. */

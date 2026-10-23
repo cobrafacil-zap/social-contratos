@@ -133,7 +133,7 @@ export function EnviarForm({
           onClick={() =>
             setSigners((prev) => [...prev, { name: "", email: "", role: "Contratante" }])
           }
-          className="inline-flex h-10 items-center gap-1.5 rounded-lg border border-paper-line bg-white px-3 text-sm font-semibold text-ink-soft hover:bg-paper"
+          className="inline-flex h-10 items-center gap-1.5 rounded-lg border border-paper-line bg-card px-3 text-sm font-semibold text-ink-soft hover:bg-paper"
         >
           <Plus className="h-4 w-4" aria-hidden /> Adicionar signatário
         </button>

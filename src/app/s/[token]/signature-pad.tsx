@@ -77,12 +77,12 @@ export function SignaturePad({
   }
 
   return (
-    <div className="rounded-xl border border-paper-line bg-white p-4 transition-shadow duration-300 hover:shadow-md">
+    <div className="rounded-xl border border-paper-line bg-card p-4 transition-shadow duration-300 hover:shadow-md">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <span className="text-sm font-semibold">{label}</span>
         <div className="relative flex gap-1.5 rounded-lg bg-paper p-1">
           <span
-            className="absolute inset-y-1 w-[calc(50%-3px)] rounded-md bg-white shadow-sm transition-transform duration-300 ease-out"
+            className="absolute inset-y-1 w-[calc(50%-3px)] rounded-md bg-card shadow-sm transition-transform duration-300 ease-out"
             style={{ transform: mode === "TYPED" ? "translateX(0)" : "translateX(calc(100% + 6px))" }}
             aria-hidden
           />
@@ -147,7 +147,7 @@ export function SignaturePad({
               onPointerMove={move}
               onPointerUp={stop}
               onPointerLeave={stop}
-              className="ss-pop w-full touch-none rounded-lg border border-dashed border-paper-line bg-white"
+              className="ss-pop w-full touch-none rounded-lg border border-dashed border-paper-line bg-card"
               style={{ cursor: "crosshair" }}
             />
             {!hasInk && (

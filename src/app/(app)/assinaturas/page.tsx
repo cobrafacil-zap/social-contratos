@@ -249,7 +249,7 @@ export default async function AssinaturasPage({ searchParams }: { searchParams: 
                               ) : (
                                 <ul className="mt-2 space-y-2">
                                   {sig.signer.fields.map((f) => (
-                                    <li key={f.id} className="rounded-md bg-white p-2.5 text-sm">
+                                    <li key={f.id} className="rounded-md bg-card p-2.5 text-sm">
                                       <p className="font-semibold">
                                         {FIELD_TYPE[f.type] ?? f.type}
                                         {f.label ? ` · ${f.label}` : ""}
@@ -295,7 +295,7 @@ export default async function AssinaturasPage({ searchParams }: { searchParams: 
                       <td className="px-5 py-4">
                         <Link
                           href={`/assinaturas/${sig.id}/certificado`}
-                          className="inline-flex h-9 items-center whitespace-nowrap rounded-lg border border-paper-line bg-white px-3 text-sm font-semibold text-ink-soft hover:bg-paper"
+                          className="inline-flex h-9 items-center whitespace-nowrap rounded-lg border border-paper-line bg-card px-3 text-sm font-semibold text-ink-soft hover:bg-paper"
                         >
                           Ver certificado
                         </Link>

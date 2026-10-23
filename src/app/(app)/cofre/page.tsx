@@ -100,7 +100,7 @@ export default async function CofrePage() {
             {vaults.map((vault) => (
               <article
                 key={vault.id}
-                className="flex flex-col rounded-xl border border-paper-line bg-white p-4"
+                className="flex flex-col rounded-xl border border-paper-line bg-card p-4"
               >
                 <div className="flex items-start gap-2.5">
                   <span

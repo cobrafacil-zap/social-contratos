@@ -21,7 +21,7 @@ export function CopyCode({ value, label = "Copiar" }: { value: string; label?: s
       type="button"
       onClick={copy}
       aria-label={copied ? "Copiado" : label}
-      className="inline-flex h-7 items-center gap-1 rounded-md border border-paper-line bg-white px-2 text-xs font-semibold text-ink-soft transition-colors hover:bg-paper"
+      className="inline-flex h-7 items-center gap-1 rounded-md border border-paper-line bg-card px-2 text-xs font-semibold text-ink-soft transition-colors hover:bg-paper"
     >
       {copied ? <Check className="h-3.5 w-3.5" aria-hidden /> : <Copy className="h-3.5 w-3.5" aria-hidden />}
       {copied ? "Copiado" : label}

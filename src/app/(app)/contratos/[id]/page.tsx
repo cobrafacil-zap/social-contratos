@@ -95,7 +95,7 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
             {canEdit && (
               <Link
                 href={`/contratos/${contract.id}/editar`}
-                className="inline-flex h-11 items-center gap-2 rounded-lg border border-paper-line bg-white px-4 text-[15px] font-semibold text-ink-soft hover:bg-paper"
+                className="inline-flex h-11 items-center gap-2 rounded-lg border border-paper-line bg-card px-4 text-[15px] font-semibold text-ink-soft hover:bg-paper"
               >
                 <PenLine className="h-4 w-4" aria-hidden /> Editar variáveis
               </Link>
@@ -104,7 +104,7 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
               <input type="hidden" name="id" value={contract.id} />
               <button
                 type="submit"
-                className="inline-flex h-11 items-center gap-2 rounded-lg border border-paper-line bg-white px-4 text-[15px] font-semibold text-ink-soft hover:bg-paper"
+                className="inline-flex h-11 items-center gap-2 rounded-lg border border-paper-line bg-card px-4 text-[15px] font-semibold text-ink-soft hover:bg-paper"
               >
                 <Copy className="h-4 w-4" aria-hidden /> Duplicar
               </button>
@@ -114,7 +114,7 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
                 <input type="hidden" name="id" value={contract.id} />
                 <button
                   type="submit"
-                  className="inline-flex h-11 items-center gap-2 rounded-lg border border-paper-line bg-white px-4 text-[15px] font-semibold text-ink-soft hover:bg-paper"
+                  className="inline-flex h-11 items-center gap-2 rounded-lg border border-paper-line bg-card px-4 text-[15px] font-semibold text-ink-soft hover:bg-paper"
                 >
                   <XCircle className="h-4 w-4" aria-hidden /> Cancelar
                 </button>
@@ -201,7 +201,7 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
             <div className="bg-paper/60 p-4 sm:p-6">
               {currentVersion ? (
                 <div
-                  className="mx-auto max-w-3xl rounded-lg border border-paper-line bg-white p-8 leading-relaxed text-[15px] text-ink-soft [&_h1]:mb-4 [&_h1]:text-2xl [&_h1]:font-extrabold [&_h1]:text-ink [&_h2]:mb-3 [&_h2]:mt-6 [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-ink [&_h3]:mb-2 [&_h3]:font-semibold [&_h3]:text-ink [&_li]:my-1 [&_ol]:my-3 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:my-3 [&_strong]:font-semibold [&_strong]:text-ink [&_table]:my-4 [&_table]:w-full [&_td]:border [&_td]:border-paper-line [&_td]:px-2 [&_td]:py-1 [&_th]:border [&_th]:border-paper-line [&_th]:px-2 [&_th]:py-1 [&_th]:text-left [&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-5"
+                  className="mx-auto max-w-3xl rounded-lg border border-paper-line bg-card p-8 leading-relaxed text-[15px] text-ink-soft [&_h1]:mb-4 [&_h1]:text-2xl [&_h1]:font-extrabold [&_h1]:text-ink [&_h2]:mb-3 [&_h2]:mt-6 [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-ink [&_h3]:mb-2 [&_h3]:font-semibold [&_h3]:text-ink [&_li]:my-1 [&_ol]:my-3 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:my-3 [&_strong]:font-semibold [&_strong]:text-ink [&_table]:my-4 [&_table]:w-full [&_td]:border [&_td]:border-paper-line [&_td]:px-2 [&_td]:py-1 [&_th]:border [&_th]:border-paper-line [&_th]:px-2 [&_th]:py-1 [&_th]:text-left [&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-5"
                   dangerouslySetInnerHTML={{ __html: currentVersion.renderedHtml }}
                 />
               ) : (
@@ -432,14 +432,14 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
             <div className="space-y-2 p-5">
               <Link
                 href="/contratos/novo"
-                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-paper-line bg-white px-4 text-sm font-semibold text-ink-soft hover:bg-paper"
+                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-paper-line bg-card px-4 text-sm font-semibold text-ink-soft hover:bg-paper"
               >
                 <FileText className="h-4 w-4" aria-hidden /> Criar novo contrato
               </Link>
               {canEdit && (
                 <Link
                   href={`/contratos/${contract.id}/editar`}
-                  className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-paper-line bg-white px-4 text-sm font-semibold text-ink-soft hover:bg-paper"
+                  className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-paper-line bg-card px-4 text-sm font-semibold text-ink-soft hover:bg-paper"
                 >
                   <PenLine className="h-4 w-4" aria-hidden /> Editar variáveis
                 </Link>

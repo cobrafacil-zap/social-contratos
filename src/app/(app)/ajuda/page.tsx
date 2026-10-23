@@ -362,7 +362,7 @@ export default async function AjudaPage() {
             <a
               key={item.href}
               href={item.href}
-              className="inline-flex h-9 items-center rounded-lg border border-paper-line bg-white px-3 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper"
+              className="inline-flex h-9 items-center rounded-lg border border-paper-line bg-card px-3 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper"
             >
               {item.label}
             </a>
@@ -424,7 +424,7 @@ export default async function AjudaPage() {
           <CardHeader title="Perguntas frequentes" />
           <div className="space-y-3 p-5">
             {FAQ.map((item) => (
-              <details key={item.pergunta} className="group rounded-xl border border-paper-line bg-white">
+              <details key={item.pergunta} className="group rounded-xl border border-paper-line bg-card">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3.5 text-sm font-semibold marker:hidden">
                   <span>{item.pergunta}</span>
                   <ChevronDown
@@ -491,7 +491,7 @@ export default async function AjudaPage() {
             </p>
             <Link
               href="/contratos"
-              className="mt-3 inline-flex h-9 items-center rounded-lg border border-paper-line bg-white px-3 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper"
+              className="mt-3 inline-flex h-9 items-center rounded-lg border border-paper-line bg-card px-3 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper"
             >
               Ir para os contratos
             </Link>

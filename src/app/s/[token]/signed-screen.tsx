@@ -116,7 +116,7 @@ export function SignedScreen({
               <button
                 type="button"
                 onClick={() => window.print()}
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-ink px-6 text-sm font-bold text-white shadow-lg shadow-ink/20 transition-all duration-200 hover:bg-cobalt hover:shadow-xl hover:shadow-cobalt/25 active:scale-[0.98]"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-solid px-6 text-sm font-bold text-white shadow-lg shadow-black/20 transition-all duration-200 hover:bg-cobalt hover:shadow-xl hover:shadow-cobalt/25 active:scale-[0.98]"
               >
                 <Download className="h-4 w-4" aria-hidden />
                 Baixar PDF
@@ -124,7 +124,7 @@ export function SignedScreen({
               <button
                 type="button"
                 onClick={() => setShowDoc((v) => !v)}
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-paper-line bg-white px-6 text-sm font-semibold text-ink-soft transition-all duration-200 hover:border-cobalt/40 hover:text-ink"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-paper-line bg-card px-6 text-sm font-semibold text-ink-soft transition-all duration-200 hover:border-cobalt/40 hover:text-ink"
               >
                 <FileText className="h-4 w-4" aria-hidden />
                 {showDoc ? "Ocultar documento" : "Ver documento"}
@@ -138,19 +138,19 @@ export function SignedScreen({
 
         {/* ------------------------- RESUMO / COMPROVANTE ------------------------- */}
         <div className="mt-6 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-xl border border-paper-line bg-white p-4">
+          <div className="rounded-xl border border-paper-line bg-card p-4">
             <p className="text-[11px] font-bold uppercase tracking-wide text-ink-mute">Documento</p>
             <p className="mt-1 truncate text-sm font-semibold text-ink">{contractTitle}</p>
             <p className="mt-0.5 font-mono text-xs text-ink-mute">{contractNumber}</p>
           </div>
-          <div className="rounded-xl border border-paper-line bg-white p-4">
+          <div className="rounded-xl border border-paper-line bg-card p-4">
             <p className="text-[11px] font-bold uppercase tracking-wide text-ink-mute">Assinado por</p>
             <p className="mt-1 truncate text-sm font-semibold text-ink">{signerName}</p>
             <p className="mt-0.5 text-xs text-ink-mute">
               {signedAt ? formatDateTime(signedAt) : "agora"}
             </p>
           </div>
-          <div className="rounded-xl border border-paper-line bg-white p-4">
+          <div className="rounded-xl border border-paper-line bg-card p-4">
             <p className="text-[11px] font-bold uppercase tracking-wide text-ink-mute">Validade</p>
             <p className="mt-1 text-sm font-semibold text-ink">Assinatura eletrônica válida</p>
             <p className="mt-0.5 text-xs text-ink-mute">{formatDate(new Date())}</p>
@@ -165,7 +165,7 @@ export function SignedScreen({
 
         {/* --------------------------- DOCUMENTO EM TELA --------------------------- */}
         {showDoc && (
-          <section className="ss-pop mt-6 rounded-xl border border-paper-line bg-white p-6 sm:p-10">
+          <section className="ss-pop mt-6 rounded-xl border border-paper-line bg-card p-6 sm:p-10">
             <h3 className="mb-5 flex items-center gap-2 border-b border-paper-line pb-3 text-sm font-bold uppercase tracking-wide text-ink-mute">
               <FileText className="h-4 w-4" aria-hidden /> Documento assinado
             </h3>

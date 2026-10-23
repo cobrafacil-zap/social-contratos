@@ -8,6 +8,7 @@ import { SignForm } from "./sign-form";
 import { ScrollReveal } from "./sign-animations";
 import { SignFlow, ReadTracker, ContinueButton } from "./sign-flow";
 import { SignedScreen } from "./signed-screen";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export const metadata: Metadata = { title: "Assinar documento", robots: { index: false } };
 export const dynamic = "force-dynamic";
@@ -44,7 +45,7 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
   return (
     <main className="min-h-dvh bg-paper">
       {/* ------------------------------- HERO ------------------------------- */}
-      <header className="relative overflow-hidden bg-ink text-white">
+      <header className="relative overflow-hidden bg-solid text-white">
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.16]"
           style={{
@@ -69,9 +70,12 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
               </span>
               {signer.contract.company.name}
             </span>
-            <span className="ss-float inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/80 ring-1 ring-white/15">
-              <ShieldCheck className="h-3.5 w-3.5" aria-hidden /> Documento protegido
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="ss-float inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/80 ring-1 ring-white/15">
+                <ShieldCheck className="h-3.5 w-3.5" aria-hidden /> Documento protegido
+              </span>
+              <ThemeToggle compact className="border-white/15 bg-white/10 text-white/80 hover:text-white" />
+            </div>
           </div>
 
           <h1 className="ss-pop mt-8 text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl" style={{ animationDelay: "90ms" }}>
@@ -138,7 +142,7 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
           <>
             {/* ----------------------------- DOCUMENTO ----------------------------- */}
             <ScrollReveal>
-              <section className="rounded-xl border border-paper-line bg-white p-6 sm:p-10">
+              <section className="rounded-xl border border-paper-line bg-card p-6 sm:p-10">
                 <h2 className="mb-5 flex items-center gap-2 border-b border-paper-line pb-3 text-sm font-bold uppercase tracking-wide text-ink-mute">
                   <FileText className="h-4 w-4" aria-hidden /> Documento
                 </h2>
@@ -153,7 +157,7 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
 
             {/* ------------------------------ FORMULÁRIO ------------------------------ */}
             <ScrollReveal delay={120} className="mt-6">
-              <section id="assinatura" className="scroll-mt-24 rounded-xl border border-paper-line bg-white p-5 sm:p-6">
+              <section id="assinatura" className="scroll-mt-24 rounded-xl border border-paper-line bg-card p-5 sm:p-6">
                 <h2 className="mb-4 text-base font-bold">Preencha e assine</h2>
                 <SignForm
                   token={token}

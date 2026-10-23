@@ -217,7 +217,7 @@ export function ModeloForm({
         </SubmitButton>
         <Link
           href={cancelHref}
-          className="inline-flex h-11 items-center justify-center rounded-lg border border-paper-line bg-white px-5 text-[15px] font-semibold text-ink-soft hover:bg-paper"
+          className="inline-flex h-11 items-center justify-center rounded-lg border border-paper-line bg-card px-5 text-[15px] font-semibold text-ink-soft hover:bg-paper"
         >
           Cancelar
         </Link>

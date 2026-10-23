@@ -22,7 +22,7 @@ export function CopyLink({ url, label = "Copiar" }: { url: string; label?: strin
     <button
       type="button"
       onClick={copy}
-      className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg border border-paper-line bg-white px-3 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper"
+      className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg border border-paper-line bg-card px-3 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper"
     >
       {copied ? (
         <>

@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Criar conta" };
 export default function SignupPage() {
   return (
     <main className="grid min-h-dvh lg:grid-cols-[1.1fr_1fr]">
-      <section className="hidden flex-col justify-between bg-ink p-12 text-white lg:flex">
+      <section className="hidden flex-col justify-between bg-solid p-12 text-white lg:flex">
         <Logo light />
         <div className="max-w-md">
           <h1 className="text-4xl font-extrabold leading-tight tracking-tight">Contratos assinados, guardados e comprováveis.</h1>
