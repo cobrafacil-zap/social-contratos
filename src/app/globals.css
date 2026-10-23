@@ -12,7 +12,7 @@
   /* Texto */
   --c-ink: #10131a;
   --c-ink-soft: #3b4252;
-  --c-ink-mute: #6b7385;
+  --c-ink-mute: #5c6472;
 
   /* Superfícies */
   --c-paper: #f4f6fa;
@@ -26,13 +26,18 @@
   --c-cobalt: #2f4bff;
   --c-cobalt-dark: #2339d6;
   --c-cobalt-tint: #eaeeff;
+  /* Tom de marca para TEXTO sobre o fundo da página */
+  --c-cobalt-on: #2f4bff;
 
   --c-ok: #12805c;
   --c-ok-tint: #e3f4ec;
+  --c-ok-on: #12805c;
   --c-warn: #a86400;
   --c-warn-tint: #fff1d6;
+  --c-warn-on: #a86400;
   --c-bad: #b42318;
   --c-bad-tint: #fde8e6;
+  --c-bad-on: #b42318;
 
   /* Sombras */
   --sh-soft: 0 1px 2px rgba(16, 19, 26, 0.05);
@@ -62,16 +67,21 @@
 
   --c-solid: #1c2432;
 
-  --c-cobalt: #4c6bff;
+  --c-cobalt: #3e5cf5;
   --c-cobalt-dark: #6b87ff;
   --c-cobalt-tint: #17203f;
+  /* No tema escuro o acento de texto precisa ser mais claro para ter contraste */
+  --c-cobalt-on: #8ca6ff;
 
-  --c-ok: #2fbf8e;
+  --c-ok: #0f7355;
   --c-ok-tint: #0d2a22;
-  --c-warn: #d99a45;
+  --c-ok-on: #3fd3a0;
+  --c-warn: #9a6410;
   --c-warn-tint: #2b2012;
-  --c-bad: #f2746b;
+  --c-warn-on: #e6b061;
+  --c-bad: #b3392f;
   --c-bad-tint: #2c1513;
+  --c-bad-on: #ff8f86;
 
   --sh-soft: 0 1px 2px rgba(0, 0, 0, 0.4);
   --sh-card: 0 1px 3px rgba(0, 0, 0, 0.5), 0 10px 28px -14px rgba(0, 0, 0, 0.7);
@@ -85,6 +95,25 @@
 /* ========================================================================== */
 /* BASE                                                                       */
 /* ========================================================================== */
+
+/*
+ * O acento de marca precisa de dois tons: um para preencher superfícies
+ * (botões, com texto branco por cima) e outro mais claro para TEXTO sobre o
+ * fundo da página no tema escuro. Como `text-cobalt` já está em todo o app,
+ * o ajuste é feito aqui, com especificidade maior que a do Tailwind.
+ */
+.text-cobalt {
+  color: var(--c-cobalt-on);
+}
+.text-ok {
+  color: var(--c-ok-on);
+}
+.text-warn {
+  color: var(--c-warn-on);
+}
+.text-bad {
+  color: var(--c-bad-on);
+}
 
 @layer base {
   html {
