@@ -92,6 +92,20 @@ npm run dev    # http://localhost:3000
 2. Cadastre todas as variáveis do `.env.example` em *Settings → Environment Variables* (`APP_URL` = URL final).
 3. O build já roda `prisma generate`. Aplique migrations em produção com `npm run db:deploy` e depois `npm run db:guards`.
 
+### Domínio próprio
+O app roda em **`https://contratos.smdigtal.com`** (o endereço `*.vercel.app` continua funcionando em paralelo).
+
+Para apontar um domínio seu:
+```bash
+vercel domains add <subdominio>.seudominio.com <projeto>
+vercel domains verify <subdominio>.seudominio.com
+```
+Depois ajuste `APP_URL` para o novo endereço e faça um novo deploy — é ele que monta os
+links de assinatura enviados por e-mail.
+
+> **Atenção:** se o domínio já tem um projeto com curinga (`*.seudominio.com`), o subdomínio
+> específico precisa ser registrado no projeto certo, senão o tráfego vai para o projeto do curinga.
+
 ---
 
 ## Passo a passo do processo (do zero ao contrato assinado)
